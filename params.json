@@ -1,0 +1,6 @@
+{
+  "name": "FileSender",
+  "tagline": "Download the latest development version",
+  "body": "## FileSender Project\r\n\r\nFileSender is a web based application that allows authenticated users to securely and easily send arbitrarily large files to other users.\r\n\r\n### Information for users\r\n\r\nYou've reached the page for FileSender administrators and developers.  This may not be what you were looking for.\r\n\r\n**[Connect to your institution's FileSender](https://app.assembla.com/spaces/file_sender/wiki/Existing_installations)**\r\n\r\n### Information for administrators\r\n\r\nDownload FileSender free of charge and install it on your own infrastructure, regardless if you're profit or non-profit.  Everybody is free to use our software as they please.\r\n\r\n**[Install FileSender on your infrastructure](//docs.filesender.org)**\r\n\r\n### Information for developers\r\n\r\nWe'd love for you to help us improve FileSender!\r\n\r\n**[Please check our contribution guide](https://github.com/filesender/filesender/blob/master/CONTRIBUTE.md)**",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
