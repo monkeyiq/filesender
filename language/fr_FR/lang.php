@@ -168,6 +168,9 @@ $lang['extend'] = 'Etendre';
 $lang['extend_and_remind'] = 'Etendre et envoyer un rappel';
 $lang['translate_to'] = 'Traduire en :';
 
+/**
+* File Encryption
+*/
 $lang['encryption'] = 'Chiffrement';
 $lang['decrypting'] = 'Déchiffrement';
 $lang['file_encryption'] = 'Fichier Chiffré (beta)';
@@ -235,7 +238,6 @@ $lang['download_link'] = 'Lien de téléchargement';
 $lang['recipients_notifications_language'] = 'Langue des destinataires';
 $lang['disable_terasender'] = 'Désactive l\'envoi en paralèlle (Cochez si votre connexion est limitée)';
 
-
 /**
  * Guest page spacific
  */
@@ -258,7 +260,6 @@ $lang['guest_reminded'] = 'Rappel envoyé à l\'invité';
 $lang['confirm_delete_guest'] = 'Souhaitez-vous vraiment supprimer cet invité (il ne pourra plus déposer de fichiers) ?';
 $lang['confirm_remind_guest'] = 'Envoyer un rappel à cet invité ?';
 $lang['message_can_not_contain_urls'] = 'Le message ne peut pas contenir d\'URLs ou quelque chose qui y ressemble.';
-
 
 /**
  * Transfer page specific
@@ -291,7 +292,6 @@ $lang['transfer_extended'] = 'Date d\'expiration étendue jusqu\'au {expires}';
 $lang['transfer_extended_reminded'] = 'Date d\'expiration étendue jusqu\'au {expires}, un rappel a été envoyé aux destinataires';
 $lang['pager_more'] = 'Plus...';
 $lang['pager_has_no_more'] = 'Rien de plus.';
-
 
 /**
  * Reports
