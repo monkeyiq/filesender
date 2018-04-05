@@ -581,6 +581,8 @@ filesender.ui.evalUploadEnabled = function() {
         filesender.ui.nodes.buttons.restart.button(ok ? 'enable' : 'disable');
     } else {
         filesender.ui.nodes.buttons.start.button(ok ? 'enable' : 'disable');
+        filesender.ui.nodes.buttons.startcurl.button(ok ? 'enable' : 'disable');
+        filesender.ui.nodes.buttons.endcurl.button(ok ? 'enable' : 'disable');
     }
     
     return ok;
@@ -786,6 +788,8 @@ $(function() {
         options: {},
         buttons: {
             start: form.find('.buttons .start'),
+            startcurl: form.find('.buttons .startcurl'),
+            endcurl: form.find('.buttons .endcurl'),
             restart: form.find('.buttons .restart'),
             pause: form.find('.buttons .pause'),
             resume: form.find('.buttons .resume'),
@@ -1030,6 +1034,23 @@ $(function() {
         }
         return false;
     }).button({disabled: true});
+
+    filesender.ui.nodes.buttons.startcurl.on('click', function() {
+        $(this).focus(); // Get out of email field / datepicker so inputs are updated
+        $(this).blur();
+        if(filesender.ui.transfer.status == 'new' && $(this).is('[aria-disabled="false"]')) {
+            filesender.ui.transfer.use_command_line_curl = true;
+            filesender.ui.startUpload( true );
+        }
+        return false;
+    }).button({disabled: false});
+
+    filesender.ui.nodes.buttons.endcurl.on('click', function() {
+        $(this).focus(); // Get out of email field / datepicker so inputs are updated
+        $(this).blur();
+        filesender.ui.transfer.uploadWholeComplete();
+        return false;
+    }).button({disabled: false});
     
     if(filesender.supports.reader) {
         filesender.ui.nodes.buttons.pause.on('click', function() {

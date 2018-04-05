@@ -14,7 +14,7 @@ window.filesender.supports.localStorage = typeof(localStorage) !== 'undefined';
 
 window.filesender.supports.workers = typeof(Worker) !== 'undefined';
 
-window.filesender.supports.reader = typeof(FileReader) !== 'undefined';
+window.filesender.supports.reader = false; // typeof(FileReader) !== 'undefined';
 
 window.filesender.supports.crypto = typeof(crypto) !== 'undefined' && typeof(crypto.subtle) !== 'undefined'
 

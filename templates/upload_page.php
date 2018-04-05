@@ -256,6 +256,12 @@ foreach(Transfer::allOptions() as $name => $dfn)  {
             <a href="#" class="start">
                 <span class="fa fa-cloud-upload fa-lg"></span> {tr:send}
             </a>
+            <a href="#" class="startcurl curl">
+                <span class="fa fa-cloud-upload-curl fa-lg"></span> Send with curl
+            </a>
+            <a href="#" class="endcurl curl">
+                <span class="fa fa-cloud-upload-curl fa-lg"></span> Finalize curl
+            </a>
             <a href="#" class="restart not_displayed">
                 <span class="fa fa-cloud-upload fa-lg"></span> {tr:restart}
             </a>

@@ -1096,19 +1096,31 @@ window.filesender.transfer = function() {
             transfer.createRestartTracker();
             
             filesender.ui.log('Transfer created, staring upload');
-            
-            if(filesender.supports.reader) {
-                // Start uploading chunks
-                if (transfer.canUseTerasender()) {
-                    filesender.terasender.start(transfer);
-                } else {
-                    // Chunk by chunk upload
-                    transfer.registerProcessInWatchdog('main');
-                    transfer.uploadChunk();
-                }
+
+            if(transfer.use_command_line_curl) {
+
+                var file = transfer.files[0];
+                var msg = "https://127.0.0.1/filesender/rest.php/file/" + file.id
+                    + "/whole?key=" + filesender.client.security_token
+                    + "&vid=" + transfer.guest_token + "";
+                filesender.ui.alert("info",msg);
+                
+                
             } else {
-                // Legacy upload
-                transfer.uploadWhole();
+            
+                if(filesender.supports.reader) {
+                    // Start uploading chunks
+                    if (transfer.canUseTerasender()) {
+                        filesender.terasender.start(transfer);
+                    } else {
+                        // Chunk by chunk upload
+                        transfer.registerProcessInWatchdog('main');
+                        transfer.uploadChunk();
+                    }
+                } else {
+                    // Legacy upload
+                    transfer.uploadWhole();
+                }
             }
         }, function(error) {
             transfer.reportError(error);
@@ -1380,4 +1392,21 @@ window.filesender.transfer = function() {
         
         this.legacy.form.submit();
     };
+
+
+    this.uploadWholeComplete = function() {
+
+        var transfer = this;
+        
+        window.setTimeout(function() {
+            filesender.client.fileComplete(file, undefined, function(data) {
+                transfer.reportComplete();
+                complete();
+            });
+        }, 100);//750);
+        
+        
+    };
+
+    
 };
