@@ -296,6 +296,8 @@ class File extends DBObject
         }
         $file->mime_type = $mime_type ? $mime_type : 'application/binary';
         $file->setName($name);
+
+        $r = Storage::createFile($file);
         
         return $file;
     }

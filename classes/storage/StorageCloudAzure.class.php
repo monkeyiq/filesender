@@ -43,6 +43,7 @@ use MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions;
 use MicrosoftAzure\Storage\Blob\Models\PublicAccessType;
 use MicrosoftAzure\Storage\Blob\Models\CreateBlobOptions;
 use MicrosoftAzure\Storage\Blob\Models\GetBlobOptions;
+use MicrosoftAzure\Storage\Blob\Models\CreateBlockBlobOptions;
 use MicrosoftAzure\Storage\Common\Exceptions\InvalidArgumentTypeException;
 use MicrosoftAzure\Storage\Common\Internal\Resources;
 use MicrosoftAzure\Storage\Common\Internal\StorageServiceSettings;
@@ -116,6 +117,19 @@ class StorageCloudAzure extends StorageFilesystem {
 
 	return null;
     }
+
+    public static function uploadAzureChunk( $az, $container_name, $blob_name, $data )
+    {
+        $options = new CreateBlockBlobOptions();
+        $options->getNumberOfConcurrency(16);
+        
+        //        $az->createBlockBlob($container_name, $blob_name, $data);
+
+        $az->setSingleBlobUploadThresholdInBytes( 4*1024*1024 );
+        $az->createBlockBlob($container_name, $blob_name, $data);
+        
+        
+    }
     
     /**
      * Write a chunk of data to file at offset
@@ -134,20 +148,17 @@ class StorageCloudAzure extends StorageFilesystem {
         $chunk_size     = strlen($data);
         $container_name = $file->uid;
         $blob_name      = self::getBlobName($offset);
+        $written = $chunk_size;
 
         try {
             $az = self::getBlobService();
+
+            $options = new CreateBlockBlobOptions();
+            $options->getNumberOfConcurrency(16);
+        
+            $az->setSingleBlobUploadThresholdInBytes( 4*1024*1024 );
+            $az->createBlockBlob($container_name, $blob_name, $data);
             
-            try {
-                $az->createBlockBlob($container_name, $blob_name, $data);
-            } catch (ServiceException $e) {
-                if( $e->getCode() == 404 ) {
-                    // make container and try again
-                    $opts = new CreateContainerOptions();
-                    $az->createContainer($container_name, $opts);
-                    $az->createBlockBlob($container_name, $blob_name, $data);
-                }
-            }
             return array(
                 'offset' => $offset,
                 'written' => $written
@@ -160,6 +171,18 @@ class StorageCloudAzure extends StorageFilesystem {
         }
     }
 
+    public static function createFile(File $file) {
+        self::setup();
+
+        $chunk_size     = strlen($data);
+        $container_name = $file->uid;
+
+        $az = self::getBlobService();
+        $opts = new CreateContainerOptions();
+        $az->createContainer($container_name, $opts);
+        
+    }
+    
     /**
      * Handles file completion checks
      * 

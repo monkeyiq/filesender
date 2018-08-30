@@ -199,6 +199,12 @@ class Storage {
         
         return call_user_func(self::getStorageClass($file).'::completeFile', $file);
     }
+
+    public static function createFile(File $file) {
+        self::setup();
+        if(!method_exists(self::getStorageClass($file), 'createFile')) return;
+        return call_user_func(self::getStorageClass($file).'::createFile', $file);
+    }
     
     /**
      * Delegates file deletion
