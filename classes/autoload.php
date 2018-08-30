@@ -115,7 +115,7 @@ class Autoloader {
                 
                 if(!file_exists($file)) {
 
-                    Logger::debug('Looking for class '.$class.', expecting it at '.$file.' but nothing found, may (or may not) be a problem ...');
+                    // Logger::debug('Looking for class '.$class.', expecting it at '.$file.' but nothing found, may (or may not) be a problem ...');
                     return;
                 }
                 
@@ -125,7 +125,7 @@ class Autoloader {
             }
         }
         
-        Logger::debug('Could not find class '.$class.', may (or may not) be a problem ...');
+        // Logger::debug('Could not find class '.$class.', may (or may not) be a problem ...');
     }
     
     /**
