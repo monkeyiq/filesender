@@ -46,7 +46,7 @@ use MicrosoftAzure\Storage\Common\Internal\StorageServiceSettings;
 use MicrosoftAzure\Storage\Common\Models\RetentionPolicy;
 use MicrosoftAzure\Storage\Common\Models\ServiceProperties;
 use MicrosoftAzure\Storage\Common\SharedAccessSignatureHelper;
-
+use MicrosoftAzure\Storage\Common\Models\Range;
 
 $connectionString = Config::get('cloud_azure_connection_string');
 $containerName    = 'filesender-test-container';
@@ -63,9 +63,12 @@ echo "Connecting to Azure server took " . round($e-$s,2) . " seconds\n";
 
 ini_set("memory_limit","1024M");
 
+$sizes = array(1,5,10,50,100,200);
+//$sizes = array(1,5,10);
+
 
 echo "performance testing using simple single API call...\n";
-foreach(  array(1,5,10,50,100,200) as $mb ) {
+foreach( $sizes as $mb ) {
 
     $fn = uniqid();
 
@@ -85,7 +88,7 @@ foreach(  array(1,5,10,50,100,200) as $mb ) {
 
 echo "\n\n";
 echo "performance testing using attempts at 16 parallel uploads...\n";
-foreach(  array(1,5,10,50,100,200) as $mb ) {
+foreach( $sizes as $mb ) {
 
     $fn = uniqid();
 
@@ -105,6 +108,50 @@ foreach(  array(1,5,10,50,100,200) as $mb ) {
     
 }
 
+
+echo "\n\n";
+echo "performance testing using pageblob API...\n";
+foreach( $sizes as $mb ) {
+
+    $fn = uniqid();
+    echo " mb " . $mb . " \n";
+    
+    $fourmb = 4*1024*1024;
+    $sz = $mb*1024*1024;
+    $remains = $sz;
+    $str = str_repeat('0',$sz);
+    $s = microtime(true);
+    $start = 0;
+    $end = $start + $fourmb - 1;
+    if( $end > $remains ) {
+        $end = $remains - 1;
+    }
+    echo "creating page blob for sz " . $sz . "\n";
+    $blobClient->createPageBlob($containerName, $fn, $sz);
+    while(true)
+    {
+        $pageRange = new Range($start, $end);
+        echo "start " . $start . " end " . $end . " len " . $pageRange->getLength() . "\n";
+        $blobClient->createBlobPages( $containerName, $fn, $pageRange, substr($str,$start,$fourmb) );
+        $start = $end+1;
+        $end = $start + $fourmb - 1;
+        if( $end > $remains ) {
+            $end = $remains - 1;
+        }
+        if( $start >= $sz ) {
+            break;
+        }
+    }
+    $e = microtime(true);
+    $tt = $e-$s;
+    printf("%10.1f mb/s to write %5.1f mb to server, total time needed was %3.1f seconds\n",
+           $mb/$tt, $mb, $tt);
+
+    
+}
+
+
+$blobClient
 
 ?>
 
