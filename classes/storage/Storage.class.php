@@ -172,12 +172,13 @@ class Storage {
      */
     public static function writeChunk(File $file, $data, $offset = null) {
         self::setup();
-        
+
+        $strlen_data = strlen($data);
         // Forbid to write chunks whose size is over upload_chunk_size config parameter's value
-        if(strlen($data) > (int)Config::get('upload_crypted_chunk_size'))
+        if($strlen_data > (int)Config::get('upload_crypted_chunk_size'))
             throw new StorageChunkTooLargeException(strlen($data), (int)Config::get('upload_chunk_size'));
         
-        $bench = new Benchmark('writeChunk','benchmark_writeChunk');
+        $bench = new Benchmark('writeChunk, data size ' . $strlen_data,'benchmark_writeChunk');
         $bench->start();
         
         // Ask underlying class to write data

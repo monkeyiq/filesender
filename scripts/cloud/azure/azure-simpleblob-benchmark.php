@@ -38,6 +38,7 @@ use MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions;
 use MicrosoftAzure\Storage\Blob\Models\PublicAccessType;
 use MicrosoftAzure\Storage\Blob\Models\CreateBlobOptions;
 use MicrosoftAzure\Storage\Blob\Models\GetBlobOptions;
+use MicrosoftAzure\Storage\Blob\Models\CreateBlockBlobOptions;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
 use MicrosoftAzure\Storage\Common\Exceptions\InvalidArgumentTypeException;
 use MicrosoftAzure\Storage\Common\Internal\Resources;
@@ -59,9 +60,11 @@ echo "Connecting to Azure server took " . round($e-$s,2) . " seconds\n";
 
 
 
-echo "performance testing...\n";
 
 ini_set("memory_limit","1024M");
+
+
+echo "performance testing using simple single API call...\n";
 foreach(  array(1,5,10,50,100,200) as $mb ) {
 
     $fn = uniqid();
@@ -69,6 +72,29 @@ foreach(  array(1,5,10,50,100,200) as $mb ) {
     $str = str_repeat('0',$mb*1024*1024);
     $s = microtime(true);
     {
+        $blobClient->createBlockBlob( $containerName, $fn, $str );
+    }
+    $e = microtime(true);
+    $tt = $e-$s;
+    printf("%10.1f mb/s to write %5.1f mb to server, total time needed was %3.1f seconds\n",
+           $mb/$tt, $mb, $tt);
+
+    
+}
+
+
+echo "\n\n";
+echo "performance testing using attempts at 16 parallel uploads...\n";
+foreach(  array(1,5,10,50,100,200) as $mb ) {
+
+    $fn = uniqid();
+
+    $str = str_repeat('0',$mb*1024*1024);
+    $s = microtime(true);
+    {
+        $options = new CreateBlockBlobOptions();
+        $options->getNumberOfConcurrency(16);
+        $blobClient->setSingleBlobUploadThresholdInBytes( 4*1024*1024 );
         $blobClient->createBlockBlob( $containerName, $fn, $str );
     }
     $e = microtime(true);
