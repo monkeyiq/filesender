@@ -50,6 +50,7 @@ use MicrosoftAzure\Storage\Common\Internal\StorageServiceSettings;
 use MicrosoftAzure\Storage\Common\Models\RetentionPolicy;
 use MicrosoftAzure\Storage\Common\Models\ServiceProperties;
 use MicrosoftAzure\Storage\Common\SharedAccessSignatureHelper;
+use MicrosoftAzure\Storage\Common\Models\Range;
 
 
 /**
@@ -150,14 +151,40 @@ class StorageCloudAzure extends StorageFilesystem {
         $blob_name      = self::getBlobName($offset);
         $written = $chunk_size;
 
+
         try {
             $az = self::getBlobService();
 
-            $options = new CreateBlockBlobOptions();
-            $options->getNumberOfConcurrency(16);
+            if( Config::get('azure_storage_api') == "pageblobs" )
+            {
+//                Logger::info('page blobs write offset ' . $offset );
+                if( $offset == null ) {
+                    $offset = 0;
+                }
+                $fourmb = 4*1024*1024;
+                $start = $offset;
+                $end = $start + $fourmb - 1;
+                $remains = $offset + $chunk_size;
+                if( $end > $remains ) {
+                    $end = $remains - 1;
+                }
+
+                $pageRange = new Range($start, $end);
+//                Logger::info( "start " . $start . " end " . $end . " len " . $pageRange->getLength() . "\n" );
+                $fn = $container_name;
+                $az->createBlobPages( $container_name, $fn, $pageRange, $data );
+                
+            }
+            else
+            {
+                
+                $options = new CreateBlockBlobOptions();
+                $options->getNumberOfConcurrency(16);
         
-            $az->setSingleBlobUploadThresholdInBytes( 4*1024*1024 );
-            $az->createBlockBlob($container_name, $blob_name, $data);
+                $az->setSingleBlobUploadThresholdInBytes( 4*1024*1024 );
+                $az->createBlockBlob($container_name, $blob_name, $data);
+            
+            }
             
             return array(
                 'offset' => $offset,
@@ -174,13 +201,28 @@ class StorageCloudAzure extends StorageFilesystem {
     public static function createFile(File $file) {
         self::setup();
 
-        $chunk_size     = strlen($data);
         $container_name = $file->uid;
 
         $az = self::getBlobService();
-        $opts = new CreateContainerOptions();
-        $az->createContainer($container_name, $opts);
-        
+
+        if( Config::get('azure_storage_api') == "pageblobs" )
+        {
+            Logger::info('using page blobs as set in your config.php');
+            $opts = new CreateContainerOptions();
+            $az->createContainer($container_name, $opts);
+
+            $sz = 101 * 1024 * 1024;
+            $fn = $container_name;
+            Logger::info('creating a page blob with sz ' . $sz );
+            $az->createPageBlob($container_name, $fn, $sz);
+            
+            Logger::info('file created...');
+        }
+        else
+        {
+            $opts = new CreateContainerOptions();
+            $az->createContainer($container_name, $opts);
+        }
     }
     
     /**

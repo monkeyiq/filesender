@@ -48,6 +48,9 @@ use MicrosoftAzure\Storage\Common\Models\ServiceProperties;
 use MicrosoftAzure\Storage\Common\SharedAccessSignatureHelper;
 use MicrosoftAzure\Storage\Common\Models\Range;
 
+use MicrosoftAzure\Storage\File\FileRestProxy;
+
+
 $connectionString = Config::get('cloud_azure_connection_string');
 $containerName    = 'filesender-test-container';
 
@@ -150,8 +153,58 @@ foreach( $sizes as $mb ) {
     
 }
 
+/*
 
-$blobClient
+$fileClient = FileRestProxy::createFileService($connectionString);
+$containerName    = 'filesender-test-file-container-' . time();
+
+echo "creating a new file share with name " . $containerName . "\n";
+$share = $fileClient->createShare($containerName);
+
+echo "\n\n";
+echo "performance testing using file API...\n";
+foreach( $sizes as $mb ) {
+
+    $fn = uniqid();
+    echo " mb " . $mb . " \n";
+    
+    $fourmb = 4*1024*1024;
+    $sz = $mb*1024*1024;
+    $remains = $sz;
+    $str = str_repeat('0',$sz);
+    $s = microtime(true);
+    $start = 0;
+    $end = $start + $fourmb - 1;
+    if( $end > $remains ) {
+        $end = $remains - 1;
+    }
+    echo "creating file for sz " . $sz . "\n";
+    
+    $fileClient->createFile($share, $fn, $sz);
+    while(true)
+    {
+        $pageRange = new Range($start, $end);
+        echo "start " . $start . " end " . $end . " len " . $pageRange->getLength() . "\n";
+        $fileClient->putFileRange( $share, $fn, $pageRange, substr($str,$start,$fourmb) );
+        $start = $end+1;
+        $end = $start + $fourmb - 1;
+        if( $end > $remains ) {
+            $end = $remains - 1;
+        }
+        if( $start >= $sz ) {
+            break;
+        }
+    }
+    $e = microtime(true);
+    $tt = $e-$s;
+    printf("%10.1f mb/s to write %5.1f mb to server, total time needed was %3.1f seconds\n",
+           $mb/$tt, $mb, $tt);
+
+    
+}
+ */
+
+
 
 ?>
 
