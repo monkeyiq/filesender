@@ -826,6 +826,8 @@ filesender.ui.cancelAutomaticResume = function() {
 
 filesender.ui.startUpload = function() {
 
+    console.log("trace_encryption_password_version starting B: " + filesender.ui.transfer.encryption_password_version );
+    
     if(!filesender.ui.nodes.required_files) {
         this.transfer.expires = filesender.ui.nodes.expires.datepicker('getDate').getTime() / 1000;
         
@@ -1018,6 +1020,7 @@ filesender.ui.startUpload = function() {
         filesender.ui.error = filesender.ui.retryingErrorHandler;
     }
     
+    console.log("trace_encryption_password_version starting C: " + filesender.ui.transfer.encryption_password_version );
     return this.transfer.start(errorHandler);
 };
 
@@ -1118,6 +1121,7 @@ $(function() {
 
     // start out asking user for a password
     filesender.ui.transfer.encryption_password_version = crypto.crypto_password_version_constants.v2018_text_password;
+    console.log("trace_encryption_password_version A: " + filesender.ui.transfer.encryption_password_version );
     
     // Register frequently used nodes
     filesender.ui.nodes = {

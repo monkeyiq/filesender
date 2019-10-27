@@ -115,7 +115,9 @@ window.filesender.terasender = {
 
         var chunkid = Math.floor(file.uploaded / filesender.config.upload_chunk_size);
         var encryption_details = this.transfer.getEncryptionMetadata( file );
-        
+
+        console.log("trace_encryption_password_version using terasender.allocjob I: " + encryption_details.password_version );
+        console.log(encryption_details );                        
 	if (typeof file.fine_progress_done === 'undefined') file.fine_progress_done=file.uploaded; //missing from file
         var job = {
             chunk: {
@@ -508,7 +510,8 @@ window.filesender.terasender = {
         var ts = this;
         this.workers_start_monitor_id = window.setTimeout( function() { noWorkersHaveStarted(ts) },
                                                            filesender.config.terasender_worker_start_must_complete_within_ms );
-        
+
+        console.log("trace_encryption_password_version using terasender.start H: " + transfer.encryption_password_version );        
         for(i=0; i<filesender.config.terasender_worker_count; i++)
             this.createWorker();
         

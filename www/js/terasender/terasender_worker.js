@@ -24,6 +24,7 @@ catch( e ) {
         data: {message: 'worker_failed_to_start'}
     });
 }
+var consoleObj = self.console;
 
 
 function isIE11()
@@ -109,11 +110,12 @@ var terasender_worker = {
                 this.job.encryption = job.encryption;
             }
         }
-        
         if(!this.job.file) {
             this.error({message: 'file_missing'});
             return;
         }
+        console.log("trace_encryption_password_version TeraSender Worker executeJob starting");        
+        self.console.log("trace_encryption_password_version TeraSender Worker executeJob starting using raw log method"); 
         
         if(!this.job.chunk.start)
             this.job.chunk.start = 0;
@@ -174,7 +176,8 @@ var terasender_worker = {
 			var cryptedBlob = null;
 			var $this = this;
 			blobReader = window.filesender.crypto_blob_reader().createReader(blob, function(blob){});
-			blobReader.blobSlice = blob;
+		        blobReader.blobSlice = blob;
+                        console.log("trace_encryption_password_version INSIDE WORKER Z: " + job.encryption_details.password_version );                    
 			blobReader.readArrayBuffer(function(arrayBuffer){
 			    window.filesender.crypto_app().encryptBlob(
                                 arrayBuffer,

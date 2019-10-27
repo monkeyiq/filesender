@@ -1110,6 +1110,7 @@ window.filesender.transfer = function() {
             errorhandler = filesender.ui.error;
         
         this.status = 'running';
+        console.log("trace_encryption_password_version transfer D: " + this.encryption_password_version );
         
         if(this.failed_transfer_restart) {
             return this.restartFailedTransfer(errorhandler);
@@ -1145,6 +1146,7 @@ window.filesender.transfer = function() {
                     this.files[i].aead = crypter.encodeAEAD( aead );
                 }
             }
+            console.log("trace_encryption_password_version transfer E: " + this.encryption_password_version );
             
         }
         
@@ -1202,9 +1204,11 @@ window.filesender.transfer = function() {
             
             filesender.ui.log('Transfer created, staring upload');
             
+            console.log("trace_encryption_password_version transfer F: " + transfer.encryption_password_version );
             if(filesender.supports.reader) {
                 // Start uploading chunks
                 if (transfer.canUseTerasender()) {
+                    console.log("trace_encryption_password_version using terasender G: " + transfer.encryption_password_version );
                     filesender.terasender.start(transfer);
                 } else {
                     // Chunk by chunk upload

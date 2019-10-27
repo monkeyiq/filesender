@@ -234,7 +234,7 @@ window.filesender.crypto_app = function () {
             var salt        = encryption_details.salt;
             var password_encoding = encryption_details.password_encoding;
             var password_version  = encryption_details.password_version;
-
+            console.log("trace_encryption_password_version generateKey ZZ: " + encryption_details.password_version );                    
             var decoded        = $this.decodePassword( password, password_version, password_encoding );
             var passwordBuffer = decoded.raw;
             var hashRounds     = window.filesender.config.encryption_password_hash_iterations_new_files;
