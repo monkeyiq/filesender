@@ -19,11 +19,29 @@
         // nothing to do on failure
     }
 
-?>
 
+$var="ccc";
+$LanguageSelectorShown = false;
+$LanguageSelectorOptions = array();
+
+if(Config::get('lang_selector_enabled') && (count(Lang::getAvailableLanguages()) > 1)) {
+    $LanguageSelectorShown   = true;
+    $LanguageSelectorOptions = array();
+    $code = Lang::getCode();
+    foreach(Lang::getAvailableLanguages() as $id => $dfn) {
+        $selected = ($id == $code) ? 'selected="selected"' : '';
+        $LanguageSelectorOptions[] = '<option value="'.$id.'" '.$selected.'>'.Utilities::sanitizeOutput($dfn['name']).'</option>';
+    }
+}
+
+?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo Lang::getCode() ?>" xml:lang="<?php echo Lang::getCode() ?>">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
         
         <title><?php echo htmlspecialchars(Config::get('site_name')); ?></title>
 
@@ -43,33 +61,29 @@
     </head>
     
     <body data-security-token="<?php echo Utilities::getSecurityToken() ?>" data-auth-type="<?php echo Auth::type() ?>">
-        <div id="wrap">
-            
-            <div id="<?php echo $headerclass; ?>">
-                <a href="<?php echo GUI::path() ?>">
-                    <?php GUI::includeLogo() ?>
-                    
-                    <?php if(Config::get('site_name_in_header')) { ?>
-                    <div class="site_name"><?php echo Config::get('site_name') ?></div>
-                    <div class="site_baseline"><?php echo Config::get('site_baseline') ?></div>
-                    <?php } ?>
-                </a>
+
+    <div class="container sticky-top filesender-topcontent ">
+        <header class="filesender-header py-3 ">
+             
+            <div class="row">
+                <div class="col-12">
+                    <img class="mx-auto d-block center-block" width="900" src="/filesender/images/banner900fff3eb.png"   />
+                </div>
             </div>
 
-                        <?php
-                        if(Config::get('lang_selector_enabled') && (count(Lang::getAvailableLanguages()) > 1)) {
-                            echo '<div id="langmenu">';
-                            echo '   <div class="rightlangmenu">';
-                            echo '       <ul>';
-                            $opts = array();
-                            $code = Lang::getCode();
-                            foreach(Lang::getAvailableLanguages() as $id => $dfn) {
-                                $selected = ($id == $code) ? 'selected="selected"' : '';
-                                $opts[] = '<option value="'.$id.'" '.$selected.'>'.Utilities::sanitizeOutput($dfn['name']).'</option>';
-                            }
-                        
-                            echo '<li><label>'.Lang::tr('user_lang').'</label><select id="language_selector">'.implode('', $opts).'</select></li>';
-                            echo '</ul></div></div>';
-                        }
-                        ?>
+            <div class="row">
+                <div class="col-12" >
+                    <?php if($LanguageSelectorShown): ?>
+                        <div class="form-inline float-right">
+                            <div class="form-group">
+                                <label for="language_selector" class="mr-1"><?php echo Lang::tr('user_lang') ?></label>
+                                <select class="form-control" id="language_selector"><?php echo implode('', $LanguageSelectorOptions) ?></select>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+
             
+

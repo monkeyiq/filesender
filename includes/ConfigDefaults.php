@@ -268,6 +268,7 @@ $default = array(
     'streamsaver_on_edge'   => true,
     'streamsaver_on_safari' => true,
 
+    'test_for_unreadable_files' => true,
     
     
     'transfer_options' => array(

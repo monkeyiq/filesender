@@ -8,7 +8,7 @@ function config_VisString( $k, $specialv, $specialret ) {
     return $v;
 }
 ?>
-<div class="box">
+<div class="core">
    
     <div id="dialog-privacy" title="Privacy">
         {tr:privacy_text}

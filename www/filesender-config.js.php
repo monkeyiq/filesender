@@ -183,6 +183,8 @@ window.filesender.config = {
     guest_reminder_limit_per_day:  <?php echo Config::get('guest_reminder_limit_per_day') ?>,
     storage_type:  "<?php echo Config::get('storage_type') ?>",
     allow_streamsaver: <?php echo value_to_TF(Browser::instance()->allowStreamSaver) ?>,
+
+    test_for_unreadable_files: <?php echo value_to_TF(Config::get('test_for_unreadable_files')) ?>,
 };
 
 <?php if(Config::get('force_legacy_mode')) { ?>
