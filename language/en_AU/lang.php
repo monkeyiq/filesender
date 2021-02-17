@@ -626,3 +626,5 @@ $lang['banned_extension'] = 'File extension not allowed';
 $lang['duplicate_file'] = 'Duplicate file';
 $lang['transfer_id_short'] = 'ID';
 $lang['unreadable_file'] = 'Can not read file';
+$lang['password_can_not_be_part_of_message_warning'] = 'Please do not send the encryption password as part of the message. Sending of email might not be encrypted and if somebody intercepts the message they could then possibly download and decrypt your file';
+$lang['password_can_not_be_part_of_message_error'] = 'As email transmission might not be encrypted you can not send a message with the encryption password in it. Please adjust the password or remove it from the message to continue.';

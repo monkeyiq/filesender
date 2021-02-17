@@ -466,7 +466,11 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                     
                     <div class="fieldcontainer" data-related-to="message">
                         <label for="message">{tr:message} ({tr:optional}) : </label>
-                        <label class="invalid" id="message_can_not_contain_urls" style="display:none;">{tr:message_can_not_contain_urls}</label>                        
+                        <label class="invalid" id="message_can_not_contain_urls" style="display:none;">{tr:message_can_not_contain_urls}</label>
+                        <label class="invalid" id="password_can_not_be_part_of_message_warning" style="display:none;">
+                            {tr:password_can_not_be_part_of_message_warning}</label>                        
+                        <label class="invalid" id="password_can_not_be_part_of_message_error" style="display:none;">
+                            {tr:password_can_not_be_part_of_message_error}</label>                        
                         <textarea id="message" name="message" class="form-control" rows="4"></textarea>
                     </div>
                     <?php } ?> <!-- closing if($allow_recipients) -->
