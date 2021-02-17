@@ -1496,7 +1496,8 @@ $(function() {
     filesender.ui.nodes.stage2hide.hide();
     filesender.ui.nodes.stage3hide.hide();
     filesender.ui.nodes.stage4hide.hide();
-    filesender.ui.nodes.gal.checkboxcontainer.hide();    
+    filesender.ui.nodes.gal.checkboxcontainer.hide();
+    form.find('.terms').hide();
 
     filesender.ui.nodes.stages.continue1.enable(false);
     filesender.ui.nodes.stages.continue2.enable(false);
