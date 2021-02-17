@@ -814,8 +814,16 @@ filesender.ui.recipients = {
     }
 };
 
+filesender.ui.isUserGettingALink = function() {
+    var gal = ('get_a_link' in filesender.ui.nodes.options) ? filesender.ui.nodes.options.get_a_link.is(':checked') : false;
+    return gal;
+}
 
 filesender.ui.doesUploadMessageContainPassword = function() {
+
+    if( filesender.ui.isUserGettingALink() )
+        return false;
+    
     if(filesender.ui.nodes.encryption.toggle.is(':checked')) {
         var p = filesender.ui.nodes.encryption.password.val();
         var m = filesender.ui.nodes.message.val();
