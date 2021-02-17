@@ -1485,8 +1485,6 @@ $(function() {
     
     // Bind file list clear button
     filesender.ui.nodes.files.clear.on('click', function() {
-//        if($(this).button('option', 'disabled')) return;
-        
         filesender.ui.files.clear();
         return false;
     });
@@ -1503,8 +1501,6 @@ $(function() {
     filesender.ui.nodes.stages.continue2.enable(false);
 
     filesender.ui.nodes.stages.continue1.on('click',function() {
-        //        if($(this).button('option', 'disabled')) return;
-
         // move to stage2
         filesender.ui.stage = 2;
         filesender.ui.nodes.stage1hide.hide();
@@ -1533,21 +1529,9 @@ $(function() {
         filesender.ui.nodes.stage1hide.hide();
         filesender.ui.nodes.stage2hide.hide();
         filesender.ui.nodes.stage3show.show();
-        // dynamic items in list
+        // best to use a selector because there are dynamic items in list
         form.find('.stage3').show(); 
-        //        $('.stage1options').hide();
-        //        $('.test111').show();
         
-        
-        // filesender.ui.nodes.files.clear.hide();
-        // filesender.ui.nodes.files.dragdrop.hide();
-        // filesender.ui.nodes.files_actions.hide();
-        // filesender.ui.nodes.uploading_actions.show();
-        // filesender.ui.nodes.uploading_actions_msg.show();
-        // filesender.ui.nodes.files.uploadlogtop.show();
-
-        
-
         filesender.ui.switchToUloadingPageConfiguration();
         filesender.ui.startUpload();
         filesender.ui.nodes.buttons.start.addClass('not_displayed');
