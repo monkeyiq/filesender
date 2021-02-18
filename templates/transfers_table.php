@@ -251,8 +251,8 @@ if (!function_exists('clickableHeader')) {
                 $items = array();
                 foreach(array_slice($transfer->files, 0, 3) as $file) {
                     $name = $file->path;
-                    if(strlen($name) > $maxlen) {
-                        $name = substr($name, 0, $maxlen).'...';
+                    if(mb_strlen($name) > $maxlen) {
+                        $name = mb_substr($name, 0, $maxlen).'...';
                     }
                     $items[] = '<span title="'.Template::sanitizeOutput($file->path).'">'.Template::sanitizeOutput($name).'</span>';
                 }
