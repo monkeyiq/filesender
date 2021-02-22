@@ -751,6 +751,11 @@ window.filesender.crypto_app = function () {
             var endoffset   = 1 * (chunkid * chunksz + (1*$this.upload_crypted_chunk_size)-1);
             var legacyChunkPadding = 0;
 
+            window.filesender.log("downloadAndDecryptChunk(top) chunkid " + chunkid + " chunksz     "     + chunksz );
+            window.filesender.log("downloadAndDecryptChunk(top) chunkid " + chunkid + " startoffset " + startoffset );
+            window.filesender.log("downloadAndDecryptChunk(top) chunkid " + chunkid + " endoffset   " + endoffset );
+            window.filesender.log("downloadAndDecryptChunk(top) chunkid " + chunkid + " uccs        " + (1*$this.upload_crypted_chunk_size) );
+            
             //
             // There are some extra things to do for streaming legacy type files
             //
