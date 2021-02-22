@@ -199,6 +199,7 @@ function downloadSingleFile($transfer, $recipient, $file_id, $recently_downloade
     $ranges = null;
     if (array_key_exists('HTTP_RANGE', $_SERVER) && $_SERVER['HTTP_RANGE']) {
         try {
+            Logger::info('User restarted download of '.$file.' with explicit range '.$_SERVER['HTTP_RANGE']);
             if (preg_match('/bytes\s*=\s*(.+)$/i', $_SERVER['HTTP_RANGE'], $m)) {
                 $parts = array_map('trim', explode(',', $m[1]));
                 foreach ($parts as $part) {
