@@ -305,7 +305,7 @@ function downloadSingleFile($transfer, $recipient, $file_id, $recently_downloade
     
     header('Content-Transfer-Encoding: binary');
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $transfer->created));
-    header('ETag: t' . $transfer->id . '_f' . $file->id . '_s' . $file->size . '_ranges_' . $etagranges );
+    header('ETag: "t' . $transfer->id . '_f' . $file->id . '_s' . $file->size . '_ranges_' . $etagranges . '"' );
     header('Connection: close');
     header('Cache-control: private');
     header('Pragma: private');
