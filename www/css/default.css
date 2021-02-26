@@ -590,9 +590,9 @@ td .desc {
     margin: 0.5em 1em 0 0; 
 }
 
-
 #upload_form .files_actions div a {
     width: 45%;
+    min-width: 100px;
 }
 
 #upload_form .files_actions div+div {
