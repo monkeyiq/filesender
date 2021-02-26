@@ -211,12 +211,12 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 </div>
 
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col">
                     </div>
-                    <div class="fieldcontainer col-3 right">
+                    <div class="col-3">
                         <a href="?s=transfers" class="btn btn-primary btn-lg btn-block mytransferslink" role="button">My Transfers</a>
                     </div>
-                    <div class="col-1">
+                    <div class="col">
                     </div>
                 </div>
               
