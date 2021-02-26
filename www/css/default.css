@@ -630,11 +630,6 @@ td .desc {
     display: none;
 }
 
-
-#upload_form .advanced_options {
-    display: none;
-}
-
 #upload_form .hidden_options {
     display: none;
 }
@@ -703,6 +698,13 @@ td .desc {
 
 .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .autoclose {
     margin-right: 1em;
+}
+
+.accordion {
+    margin-top: 1.5rem;
+}
+.accordion .card-header {
+    cursor: pointer;
 }
 
 /* transfers page */

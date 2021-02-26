@@ -529,34 +529,33 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
 
                     
                     <?php if(count(Transfer::availableOptions(true)) || (Config::get('terasender_enabled') && Config::get('terasender_advanced'))) { ?>
-                    <div class="fieldcontainer">
-                        <a class="toggle_advanced_options" href="#">{tr:advanced_settings}</a>
-                    </div>
-                    
-                    <div class="advanced_options">
-                        <?php
-                        foreach(Transfer::availableOptions(true) as $name => $cfg)  {
+                    <div class="accordion" id="advanced_options">
+                      <div class="card">
+                        <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">{tr:advanced_settings}</div>
+                        <div id="collapseOne" class="collapse collapsed" aria-labelledby="headingOne" data-parent="#advanced_options">
+                          <div class="card-body">
+                          <?php
+                          foreach(Transfer::availableOptions(true) as $name => $cfg)  {
                             if( !array_key_exists($name,$upload_options_handled)) {
                                 $displayoption($name, $cfg, Auth::isGuest());
                             }
-                        }
-                        ?>
-                        
-                        
-                        <?php if (Config::get('terasender_enabled') && Config::get('terasender_advanced')) { ?>
-                        <div class="fieldcontainer">
+                          }
+                          ?>
+                          <?php if (Config::get('terasender_enabled') && Config::get('terasender_advanced')) { ?>
+                          <div class="fieldcontainer">
                             <label for="terasender_worker_count">{tr:terasender_worker_count}</label>
-                            
+
                             <input id="terasender_worker_count"
                                    class="form-control"
                                    type="text"
                                    value="<?php echo Config::get('terasender_worker_count') ?>"/>
                             <br />
+                          </div>
+                          <?php } ?>
+                          <?php if (Config::get('terasender_enabled') && Config::get('terasender_disableable')) $displayoption('disable_terasender', array('default'=>false), false); ?>
+                          </div>
                         </div>
-                        <?php } ?>
-                        <?php if (Config::get('terasender_enabled') && Config::get('terasender_disableable')) $displayoption('disable_terasender', array('default'=>false), false); ?>
-
-
+                      </div>
                     </div>
                     <?php } /* End of advanced settings div. */ ?>
 
@@ -572,9 +571,7 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 </td>
                 </tr>
                 <tr>
-                    <td colspan="2">
-                    </td>
-                    <td class="right" colspan="1"> 
+                    <td class="right" colspan="3"> 
                         <a href="#" class="stage2continue btn btn-primary btn-lg btn-block" role="button">Send</a>
                     </td>
                 </tr>                
