@@ -402,10 +402,10 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 <tr>
                     <td colspan="2">
                         <h4>
-                            <p                 class="galmodelink  h2">Create a download link...
-                            <a id="galemail"   class="galmodelink  h2 btn btn-secondary"  href="#">Or send via email</a></p>
-                            <p                 class="galmodeemail h2">Send via email...
-                            <a id="galgal"     class="galmodeemail h2 btn btn-secondary"  href="#">Or get a link</a></p>
+                            <a               class="galmodelink  btn btn-primary">Create a download link</a>
+                            <a id="galemail" class="galmodelink  btn btn-secondary" href="#">Send via email</a>
+                            <a id="galgal"   class="galmodeemail btn btn-secondary" href="#">Create a download link</a>
+                            <a               class="galmodeemail btn btn-primary">Send via email</a>
                         </h4>
                     </td>
                     <td class="">
