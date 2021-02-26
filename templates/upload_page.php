@@ -95,7 +95,7 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
         }
     }
     
-    echo '<div class="custom-control custom-checkbox" data-option="'.$name.'" '. $extraDivAttrs .'>';
+    echo '<div class="custom-control custom-switch" data-option="'.$name.'" '. $extraDivAttrs .'>';
     if($text) {
         echo '    <label for="'.$name.'" class="custom-control-label">'.Lang::tr($name).'</label>';
         echo '    <input id="'.$name.'" name="'.$name.'" class="custom-control-input" type="text" value="'.htmlspecialchars($default).'" '.$disabled.'>';
@@ -301,7 +301,7 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
             <?php if(Config::get('encryption_enabled')) {  ?>
                 <tr>
                     <td colspan="3">
-                        <div class="custom-control custom-checkbox" id="encrypt_checkbox" data-related-to="encryption">
+                        <div class="custom-control custom-switch" id="encrypt_checkbox" data-related-to="encryption">
                             <input id="encryption"
                                    name="encryption"
                                    class="custom-control-input"
@@ -329,7 +329,7 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 </tr>
                 <tr id="encgroup2">
                     <td colspan="3">
-                        <div class="custom-control custom-checkbox" id="encryption_password_container_generate">
+                        <div class="custom-control custom-switch" id="encryption_password_container_generate">
                             <input id="encryption_use_generated_password"
                                    name="encryption_use_generated_password"
                                    class="custom-control-input"
@@ -348,7 +348,7 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 </tr>
                 <tr id="encgroup3">
                     <td colspan="3">
-                        <div class="custom-control custom-checkbox" id="encryption_password_show_container">  
+                        <div class="custom-control custom-switch" id="encryption_password_show_container">  
                             <input id="encryption_show_password" name="encryption_show_password" class="custom-control-input" type="checkbox">  
                             <label for="encryption_show_password" class="custom-control-label">{tr:file_encryption_show_password}</label>
                         </div>
@@ -362,7 +362,7 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
             <?php if (Config::get('aup_enabled')) { ?>
                 <tr>
                     <td colspan="2">
-                        <div class="aupbox custom-control custom-checkbox">
+                        <div class="aupbox custom-control custom-switch">
                             <input id="aup" name="aup"
                                    type="checkbox"
                                    class="custom-control-input"
@@ -488,7 +488,7 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 </tr>
             
                 <tr>
-                <td class="nobox" colspan="2">
+                <td class="nobox" colspan="3">
 
                     <div class="basic_options">
                         <div class="fieldcontainer">
@@ -544,7 +544,7 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                           <?php if (Config::get('terasender_enabled') && Config::get('terasender_advanced')) { ?>
                           <div class="fieldcontainer">
                             <label for="terasender_worker_count">{tr:terasender_worker_count}</label>
-
+                            
                             <input id="terasender_worker_count"
                                    class="form-control"
                                    type="text"
