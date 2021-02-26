@@ -47,7 +47,7 @@ $maybe_display_aggregate_statistics_menu = false;
                     $faicon = 'fa-sign-out';
                     $icon = '<i class="fa '.$faicon.'"></i> ';
                     
-                    echo '<a class="p-2 text-muted" href="'.Utilities::sanitizeOutput($url).'" id="topmenu_logoff">'.$icon.Lang::tr('logoff').'</a>';
+                    echo '<div class="nav-item"><a class="p-2 nav-link" href="'.Utilities::sanitizeOutput($url).'" id="topmenu_logoff">'.$icon.Lang::tr('logoff').'</a></div>';
                 }
             }
             else if (!Auth::isGuest())
@@ -58,7 +58,7 @@ $maybe_display_aggregate_statistics_menu = false;
                 if(Config::get('auth_sp_embedded')) {
                     pagemenuitem('logon');
                 }else{
-                    echo '<a class="p-2 text-muted" href="'.Utilities::sanitizeOutput(AuthSP::logonURL()).'" id="topmenu_logon">'.$icon.Lang::tr('logon').'</a>';
+                    echo '<div class="nav-item"><a class="p-2 nav-link" href="'.Utilities::sanitizeOutput(AuthSP::logonURL()).'" id="topmenu_logon">'.$icon.Lang::tr('logon').'</a></div>';
                 }
             }
         ?>
