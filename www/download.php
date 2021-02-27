@@ -307,9 +307,9 @@ function downloadSingleFile($transfer, $recipient, $file_id, $recently_downloade
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $transfer->created));
     header('ETag: "t' . $transfer->id . '_f' . $file->id . '_s' . $file->size . '_ranges_' . $etagranges . '"' );
     header('Connection: close');
-    header('Cache-control: private');
+    header('Cache-control: no-store, max-age=0');
     header('Pragma: private');
-    header('Expires: 0');
+//    header('Expires: 0');
     
     if ($ranges) {
         Logger::info('User restarted download of '.$file.' from offset '.$ranges[0]['start']);
