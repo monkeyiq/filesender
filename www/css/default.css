@@ -588,7 +588,7 @@ td .desc {
 }
 
 #upload_form .files_actions {
-    margin: 0.5em 1em 0 0; 
+    margin: 0.5em -1em 0 -1em; 
 }
 
 #upload_form .files_actions div a {
