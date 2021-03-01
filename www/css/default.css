@@ -442,7 +442,7 @@ td .desc {
 
 
 #upload_form .files .file .remove {
-    float: right;
+    text-align: right;
     line-height: 1.3333em;
 }
 
