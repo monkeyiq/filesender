@@ -296,11 +296,11 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
         </div>
         <!-- closed class="" still in form & core -->
 
-        <table class="upload stage1 stage1options" id="" width="100%">
+	<div class="upload stage1 stage1options">
 
             <?php if(Config::get('encryption_enabled')) {  ?>
-                <tr>
-                    <td colspan="3">
+                <div class="row">
+                    <div class="col">
                         <div class="custom-control custom-switch" id="encrypt_checkbox" data-related-to="encryption">
                             <input id="encryption"
                                    name="encryption"
@@ -309,10 +309,10 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                             />
                             <label for="encryption" class="custom-control-label">{tr:file_encryption}</label>
                         </div>
-                    </td>
-                </tr>
-                <tr id="encgroup1">
-                    <td colspan="3">
+                    </div>
+                </div>
+                <div id="encgroup1" class="row">
+                    <div class="col">
                         <div class="fieldcontainer" id="encryption_password_container">  
                             <label for="encryption_password" style="cursor: pointer;">{tr:file_encryption_password} : </label>
                             <input class="encryption_password"
@@ -325,10 +325,10 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                         <div class="fieldcontainer" id="encryption_password_container_too_short_message">
                             {tr:file_encryption_password_too_short}
                         </div>
-                    </td>
-                </tr>
-                <tr id="encgroup2">
-                    <td colspan="3">
+                    </div>
+                </div>
+                <div id="encgroup2" class="row">
+                    <div class="col">
                         <div class="custom-control custom-switch" id="encryption_password_container_generate">
                             <input id="encryption_use_generated_password"
                                    name="encryption_use_generated_password"
@@ -344,22 +344,21 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                                 <span class="fa fa-refresh"></span>&nbsp;{tr:generate_a_different_password}
                             </button>
                         </div>
-                    </td>
-                </tr>
-                <tr id="encgroup3">
-                    <td colspan="3">
+                    </div>
+                </div>
+                <div id="encgroup3" class="row">
+                    <div class="col">
                         <div class="custom-control custom-switch" id="encryption_password_show_container">  
                             <input id="encryption_show_password" name="encryption_show_password" class="custom-control-input" type="checkbox">  
                             <label for="encryption_show_password" class="custom-control-label">{tr:file_encryption_show_password}</label>
                         </div>
-                    </td>
-                </tr>
-                
+                    </div>
+                </div>
             <?php } ?>
             
             <?php if (Config::get('aup_enabled')) { ?>
-                <tr>
-                    <td colspan="2">
+                <div class="row">
+                    <div class="col">
                         <div class="aupbox custom-control custom-switch">
                             <input id="aup" name="aup"
                                    type="checkbox"
@@ -374,32 +373,26 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                             
                             <div class="terms">{tr:aupterms}</div>
                         </div>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             <?php } ?>
             
-                <tr>
-                    <td colspan="2">
-                    </td>
-                    <td class="float-right right" colspan="1">
-                        <div>
-                            <a href="#" class="btn btn-primary btn-lg  stage1continue" role="button">Continue</a>
-                        </div>
-                    </td>
-                </tr>                
-            
             <?php if (Config::get('upload_graph_bulk_display')) { ?>
-                <tr>
-                    <td colspan="3">
+                <div class="row">
+                    <div class="col-12 text-right">
                       <div id="graph" class="uploadbulkgraph"><div id="graphDiv" style="width:400px; height:200px; margin:0 auto"><canvas id="speedChart"></canvas></div></div>
                       <script type="text/javascript" src="{path:lib/chart.js/Chart.bundle.min.js}"></script>
                       <script type="text/javascript" src="{path:js/graph.js}"></script>
-                    </td>
-                </tr>                
+                    </div>
+        	</div>
             <?php } ?>
             
-        </table>
-        
+            <div class="row">
+                <div class="col-12 text-right">
+                    <a href="#" class="btn btn-primary btn-lg  stage1continue" role="button">Continue</a>
+                </div>
+            </div>
+        </div>
         
         <div class="nobox">
 
