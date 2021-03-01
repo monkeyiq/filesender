@@ -18,10 +18,6 @@
         // this is just for $headerclass if they are a superuser.
         // nothing to do on failure
     }
-
-
-$var="ccc";
-
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo Lang::getCode() ?>" xml:lang="<?php echo Lang::getCode() ?>">
     <head>
