@@ -21,18 +21,6 @@
 
 
 $var="ccc";
-$LanguageSelectorShown = false;
-$LanguageSelectorOptions = array();
-
-if(Config::get('lang_selector_enabled') && (count(Lang::getAvailableLanguages()) > 1)) {
-    $LanguageSelectorShown   = true;
-    $LanguageSelectorOptions = array();
-    $code = Lang::getCode();
-    foreach(Lang::getAvailableLanguages() as $id => $dfn) {
-        $selected = ($id == $code) ? 'selected="selected"' : '';
-        $LanguageSelectorOptions[] = '<option value="'.$id.'" '.$selected.'>'.Utilities::sanitizeOutput($dfn['name']).'</option>';
-    }
-}
 
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo Lang::getCode() ?>" xml:lang="<?php echo Lang::getCode() ?>">
@@ -66,20 +54,3 @@ if(Config::get('lang_selector_enabled') && (count(Lang::getAvailableLanguages())
         <header class="filesender-header py-3 ">
              
 	<div class="row"><a href="<?php echo Config::get('site_url') ?>" id="header"></a></div>
-
-            <div class="row">
-                <div class="col-12" >
-                    <?php if($LanguageSelectorShown): ?>
-                        <div class="form-inline float-right">
-                            <div class="form-group">
-                                <label for="language_selector" class="mr-1"><?php echo Lang::tr('user_lang') ?></label>
-                                <select class="form-control" id="language_selector"><?php echo implode('', $LanguageSelectorOptions) ?></select>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-
-            
-
