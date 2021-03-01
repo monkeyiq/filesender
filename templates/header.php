@@ -65,11 +65,7 @@ if(Config::get('lang_selector_enabled') && (count(Lang::getAvailableLanguages())
     <div class="container sticky-top filesender-topcontent ">
         <header class="filesender-header py-3 ">
              
-            <div class="row">
-                <div class="col-12">
-                    <img class="mx-auto d-block center-block" width="900" src="/filesender/images/banner900fff3eb.png"   />
-                </div>
-            </div>
+            <div class="row" id="header"></div>
 
             <div class="row">
                 <div class="col-12" >
