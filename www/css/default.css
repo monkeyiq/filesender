@@ -89,6 +89,7 @@ abbr {
 #header {
     background: url(../images/banner900fff3eb.png) no-repeat 60px 0px;
     height: 60px;
+    width: 100%;
     margin-bottom: 1em;
 }
 

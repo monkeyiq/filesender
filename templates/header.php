@@ -65,7 +65,7 @@ if(Config::get('lang_selector_enabled') && (count(Lang::getAvailableLanguages())
     <div class="container sticky-top filesender-topcontent ">
         <header class="filesender-header py-3 ">
              
-            <div class="row" id="header"></div>
+	<div class="row"><a href="<?php echo Config::get('site_url') ?>" id="header"></a></div>
 
             <div class="row">
                 <div class="col-12" >
