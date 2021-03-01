@@ -325,6 +325,9 @@ td .desc {
     background-color: #f00;
 }
 
+.custom-control-label {
+    cursor: pointer;
+}
 
 /* JQuery UI overides */
 
