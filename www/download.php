@@ -309,7 +309,7 @@ function downloadSingleFile($transfer, $recipient, $file_id, $recently_downloade
     header('Connection: close');
     header('Cache-control: no-store, max-age=0');
     header('Pragma: private');
-//    header('Expires: 0');
+    header('Expires: 0');
     
     if ($ranges) {
         Logger::info('User restarted download of '.$file.' from offset '.$ranges[0]['start']);
