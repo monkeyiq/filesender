@@ -1536,6 +1536,9 @@ $(function() {
         filesender.ui.nodes.stage3hide.hide();
         filesender.ui.nodes.stage2show.hide();
         filesender.ui.nodes.stage1hide.show();
+
+	//force graph to redraw
+	$("#speedChart").resize();
         return false;
     });
 
