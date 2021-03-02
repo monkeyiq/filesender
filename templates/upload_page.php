@@ -211,12 +211,12 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 </div>
 
                 <div class="row">
-                    <div class="col">
-                    </div>
                     <div class="col-3">
+                    </div>
+                    <div class="col-6">
                         <a href="?s=transfers" class="btn btn-primary btn-lg btn-block mytransferslink" role="button">My Transfers</a>
                     </div>
-                    <div class="col">
+                    <div class="col-3">
                     </div>
                 </div>
               
@@ -376,8 +376,10 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
             <?php } ?>
             
             <div class="row">
-                <div class="col-12 text-right">
-                    <a href="#" class="btn btn-primary btn-lg  stage1continue" role="button">Continue</a>
+                <div class="col">
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary btn-lg btn-block stage1continue" role="button">Continue</a>
                 </div>
             </div>
         </div>
