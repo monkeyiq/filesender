@@ -559,7 +559,14 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 </tr>
                 <tr>
                     <td class="right" colspan="3"> 
-                        <a href="#" class="stage2continue btn btn-primary btn-lg btn-block" role="button">Send</a>
+                    <div class="row">
+                        <div class="col">
+                            <a href="#" class="stage2back btn btn-primary btn-lg btn-block" role="button">Back</a>
+                        </div>
+                        <div class="col">
+                            <a href="#" class="stage2continue btn btn-primary btn-lg btn-block" role="button">Send</a>
+                        </div>
+                    </div>
                     </td>
                 </tr>                
                 
