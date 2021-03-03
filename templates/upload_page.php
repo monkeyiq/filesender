@@ -214,7 +214,7 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                     <div class="col-3">
                     </div>
                     <div class="col-6">
-                        <a href="?s=transfers" class="btn btn-primary btn-lg btn-block mytransferslink" role="button">My Transfers</a>
+                        <a href="?s=transfers" class="btn btn-primary btn-lg btn-block mytransferslink" role="button">{tr:ui2_my_transfers}</a>
                     </div>
                     <div class="col-3">
                     </div>
@@ -379,7 +379,7 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 <div class="col">
                 </div>
                 <div class="col">
-                    <a href="#" class="btn btn-primary btn-lg btn-block stage1continue" role="button">Continue</a>
+                    <a href="#" class="btn btn-primary btn-lg btn-block stage1continue" role="button">{tr:continue}&nbsp;<i class="fa fa-chevron-right"></i></a>
                 </div>
             </div>
         </div>
@@ -391,10 +391,10 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 <tr>
                     <td colspan="2">
                         <h4>
-                            <a               class="galmodelink  btn btn-primary">Create a download link</a>
-                            <a id="galemail" class="galmodelink  btn btn-secondary" href="#">Send via email</a>
-                            <a id="galgal"   class="galmodeemail btn btn-secondary" href="#">Create a download link</a>
-                            <a               class="galmodeemail btn btn-primary">Send via email</a>
+                            <a               class="galmodelink  btn btn-primary">{tr:ui2_mode_link}</a>
+                            <a id="galemail" class="galmodelink  btn btn-secondary" href="#">{tr:ui2_mode_mail}</a>
+                            <a id="galgal"   class="galmodeemail btn btn-secondary" href="#">{tr:ui2_mode_link}</a>
+                            <a               class="galmodeemail btn btn-primary">{tr:ui2_mode_mail}</a>
                         </h4>
                     </td>
                     <td class="">
@@ -563,10 +563,10 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                     <td class="right" colspan="3"> 
                     <div class="row">
                         <div class="col">
-                            <a href="#" class="stage2back btn btn-primary btn-lg btn-block" role="button">Back</a>
+                            <a href="#" class="stage2back btn btn-primary btn-lg btn-block" role="button"><i class="fa fa-chevron-left"></i>&nbsp;{tr:back}</a>
                         </div>
                         <div class="col">
-                            <a href="#" class="stage2continue btn btn-primary btn-lg btn-block" role="button">Send</a>
+                            <a href="#" class="stage2continue btn btn-primary btn-lg btn-block" role="button">{tr:send}&nbsp;<i class="fa fa-chevron-right"></i></a></a>
                         </div>
                     </div>
                     </td>
