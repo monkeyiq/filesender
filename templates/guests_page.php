@@ -61,7 +61,7 @@ use ( $new_guests_can_only_send_to_creator,
     $extraDivAttrs = '';
     $hidden = '';
     if($transfer && in_array($name, array(TransferOptions::REDIRECT_URL_ON_COMPLETE))) {
-        echo '<div class="custom-control custom-checkbox" data-option="'.$name.'" '. $extraDivAttrs .'>';
+        echo '<div class="custom-control custom-switch" data-option="'.$name.'" '. $extraDivAttrs .'>';
         echo '    <label for="'.$name.'">'.Lang::tr($name).'</label>';
         echo '    <input id="'.$name.'" class="custom-control-input" name="'.$name.'" type="text">';
         echo '    <br/>';
@@ -73,7 +73,7 @@ use ( $new_guests_can_only_send_to_creator,
         if($name == 'get_a_link' || $name == 'can_only_send_to_me') {
             $lockClass = 'get_a_link_lock';
         }
-        echo '<div class="custom-control custom-checkbox '.$lockClass.'" '. $extraDivAttrs .'>';
+        echo '<div class="custom-control custom-switch '.$lockClass.'" '. $extraDivAttrs .'>';
         echo '  <input id="'.$name.'" class="custom-control-input" name="'.$name.'" type="checkbox" '.$checked.' />';
         echo '  <label for="'.$name.'" class="custom-control-label '.$lockClassLabel.'">'.Lang::tr($name).'</label>';
         echo '</div>';

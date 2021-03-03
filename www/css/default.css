@@ -87,8 +87,9 @@ abbr {
 
 
 #header {
-    background: #666 url(../images/banner900.png) no-repeat top left;
+    background: url(../images/banner900fff3eb.png) no-repeat 60px 0px;
     height: 60px;
+    width: 100%;
     margin-bottom: 1em;
 }
 
@@ -151,16 +152,13 @@ abbr {
     padding-top: 1.2em;
 }
 
-
 .core {
     padding: 1em;
     background: #ffffff;
     border: 0px solid #aaa;
     border-radius:0.5em;
     -moz-border-radius: 0.5em;
-    margin: 0 0.25em 0.5em 0.25em;
 }
-
 
 .core-tabbed {
     padding: 1em;
@@ -168,21 +166,17 @@ abbr {
     border: 0px solid #aaa;
     border-radius: 0em 0.5em 0.5em 0.5em;
     -moz-border-radius: 0.5em;
-    margin: 0 0.25em 0.5em 0em;
 }
-
 
 .box {
     padding: 0.5em;
     border: 1px solid #aaa;
     border-radius:0.5em;
     -moz-border-radius: 0.5em;
-    margin: 0 0.25em 0.5em 0.25em;
 }
 
 .boxnoframe {
     padding: 0.5em;
-    margin: 0 0.25em 0.5em 0.25em;
 }
 
 .clickable, [data-action] {
@@ -324,6 +318,9 @@ td .desc {
     background-color: #f00;
 }
 
+.custom-control-label {
+    cursor: pointer;
+}
 
 /* JQuery UI overides */
 
@@ -445,7 +442,7 @@ td .desc {
 
 
 #upload_form .files .file .remove {
-    float: right;
+    text-align: right;
     line-height: 1.3333em;
 }
 
@@ -587,12 +584,12 @@ td .desc {
 }
 
 #upload_form .files_actions {
-    margin: 0.5em 1em 0 0; 
+    margin: 0.5em -1em 0 -1em; 
 }
-
 
 #upload_form .files_actions div a {
     width: 45%;
+    min-width: 100px;
 }
 
 #upload_form .files_actions div+div {
@@ -627,11 +624,6 @@ td .desc {
 #upload_form .uploading_actions .stats .uploaded,
 #upload_form .uploading_actions .stats .average_speed
 {
-    display: none;
-}
-
-
-#upload_form .advanced_options {
     display: none;
 }
 
@@ -703,6 +695,13 @@ td .desc {
 
 .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .autoclose {
     margin-right: 1em;
+}
+
+.accordion {
+    margin-top: 1.5rem;
+}
+.accordion .card-header {
+    cursor: pointer;
 }
 
 /* transfers page */

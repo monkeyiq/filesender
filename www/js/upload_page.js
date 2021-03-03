@@ -1374,6 +1374,7 @@ $(function() {
         stages: {
             continue1: form.find('.stage1continue'),
             continue2: form.find('.stage2continue'),
+            back2: form.find('.stage2back'),
         },
         gal: {
             gal: form.find('#galgal'),
@@ -1478,6 +1479,18 @@ $(function() {
         }
         
         
+        return false;
+    });
+
+    filesender.ui.nodes.stages.back2.on('click',function() {
+        // move to stage1
+        filesender.ui.stage = 1;
+        filesender.ui.nodes.stage3hide.hide();
+        filesender.ui.nodes.stage2show.hide();
+        filesender.ui.nodes.stage1hide.show();
+
+	//force graph to redraw
+	$("#speedChart").resize();
         return false;
     });
 

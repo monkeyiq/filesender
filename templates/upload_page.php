@@ -95,7 +95,7 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
         }
     }
     
-    echo '<div class="custom-control custom-checkbox" data-option="'.$name.'" '. $extraDivAttrs .'>';
+    echo '<div class="custom-control custom-switch" data-option="'.$name.'" '. $extraDivAttrs .'>';
     if($text) {
         echo '    <label for="'.$name.'" class="custom-control-label">'.Lang::tr($name).'</label>';
         echo '    <input id="'.$name.'" name="'.$name.'" class="custom-control-input" type="text" value="'.htmlspecialchars($default).'" '.$disabled.'>';
@@ -211,12 +211,12 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 </div>
 
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-3">
                     </div>
-                    <div class="fieldcontainer col-3 right">
+                    <div class="col-6">
                         <a href="?s=transfers" class="btn btn-primary btn-lg btn-block mytransferslink" role="button">My Transfers</a>
                     </div>
-                    <div class="col-1">
+                    <div class="col-3">
                     </div>
                 </div>
               
@@ -242,34 +242,22 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 </div>
             </div>
 
-
-
-            
-            <div class="files_actions stage1 container">
-
-                <div class="row">
-                    <div class="col-6">
-                        <a class="select_files float-left btn btn-secondary  " href="#">
+            <div class="files_actions stage1 row">
+                    <div class="col-6 text-left">
+                        <a class="select_files btn btn-secondary  " href="#">
                             {tr:select_files}
                         </a>
                     </div>
-                    <div class="col-6">
+                    <div class="col-6 text-right">
                         <?php if ($upload_directory_button_enabled) { ?>
-                            <div
-                                class="float-right <?php echo $files_actions_div_extra_class ?>   ">
+                            <div <?php echo $files_actions_div_extra_class ?>>
                                 <input type="file" name="selectdir" id="selectdir" class="selectdir_hidden_input_element" webkitdirectory directory multiple mozdirectory />
                                 <label for="selectdir" class="select_directory btn btn-secondary ">{tr:send_an_entire_directory}</label>
                             </div>
                         <?php } ?>
-                
                     </div>
-                </div>
-                
             </div>
 
-
-
-            
             <div class="uploading_actions stage3">
                 <div class="msg">
                     <table class="resumetable">
@@ -296,12 +284,12 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
         </div>
         <!-- closed class="" still in form & core -->
 
-        <table class="upload stage1 stage1options" id="" width="100%">
+	<div class="upload stage1 stage1options">
 
             <?php if(Config::get('encryption_enabled')) {  ?>
-                <tr>
-                    <td colspan="3">
-                        <div class="custom-control custom-checkbox" id="encrypt_checkbox" data-related-to="encryption">
+                <div class="row">
+                    <div class="col">
+                        <div class="custom-control custom-switch" id="encrypt_checkbox" data-related-to="encryption">
                             <input id="encryption"
                                    name="encryption"
                                    class="custom-control-input"
@@ -309,10 +297,10 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                             />
                             <label for="encryption" class="custom-control-label">{tr:file_encryption}</label>
                         </div>
-                    </td>
-                </tr>
-                <tr id="encgroup1">
-                    <td colspan="3">
+                    </div>
+                </div>
+                <div id="encgroup1" class="row">
+                    <div class="col">
                         <div class="fieldcontainer" id="encryption_password_container">  
                             <label for="encryption_password" style="cursor: pointer;">{tr:file_encryption_password} : </label>
                             <input class="encryption_password"
@@ -325,11 +313,11 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                         <div class="fieldcontainer" id="encryption_password_container_too_short_message">
                             {tr:file_encryption_password_too_short}
                         </div>
-                    </td>
-                </tr>
-                <tr id="encgroup2">
-                    <td colspan="3">
-                        <div class="custom-control custom-checkbox" id="encryption_password_container_generate">
+                    </div>
+                </div>
+                <div id="encgroup2" class="row">
+                    <div class="col">
+                        <div class="custom-control custom-switch" id="encryption_password_container_generate">
                             <input id="encryption_use_generated_password"
                                    name="encryption_use_generated_password"
                                    class="custom-control-input"
@@ -344,25 +332,22 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                                 <span class="fa fa-refresh"></span>&nbsp;{tr:generate_a_different_password}
                             </button>
                         </div>
-                    </td>
-                </tr>
-                <tr id="encgroup3">
-                    <td colspan="3">
-                        <div class="custom-control custom-checkbox" id="encryption_password_show_container">  
+                    </div>
+                </div>
+                <div id="encgroup3" class="row">
+                    <div class="col">
+                        <div class="custom-control custom-switch" id="encryption_password_show_container">  
                             <input id="encryption_show_password" name="encryption_show_password" class="custom-control-input" type="checkbox">  
                             <label for="encryption_show_password" class="custom-control-label">{tr:file_encryption_show_password}</label>
                         </div>
-                    </td>
-                </tr>
-                
+                    </div>
+                </div>
             <?php } ?>
             
-
-                
             <?php if (Config::get('aup_enabled')) { ?>
-                <tr>
-                    <td colspan="2">
-                        <div class="aupbox custom-control custom-checkbox">
+                <div class="row">
+                    <div class="col">
+                        <div class="aupbox custom-control custom-switch">
                             <input id="aup" name="aup"
                                    type="checkbox"
                                    class="custom-control-input"
@@ -376,24 +361,28 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                             
                             <div class="terms">{tr:aupterms}</div>
                         </div>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             <?php } ?>
-
             
-                <tr>
-                    <td colspan="2">
-                    </td>
-                    <td class="float-right right" colspan="1">
-                        <div>
-                            <a href="#" class="btn btn-primary btn-lg  stage1continue" role="button">Continue</a>
-                        </div>
-                    </td>
-                </tr>                
+            <?php if (Config::get('upload_graph_bulk_display')) { ?>
+                <div class="row">
+                    <div class="col-12">
+                      <div id="graph" class="uploadbulkgraph"><div id="graphDiv" style="width:400px; height:200px; margin:0 auto 1.5em auto"><canvas id="speedChart"></canvas></div></div>
+                      <script type="text/javascript" src="{path:lib/chart.js/Chart.bundle.min.js}"></script>
+                      <script type="text/javascript" src="{path:js/graph.js}"></script>
+                    </div>
+        	</div>
+            <?php } ?>
             
-            
-        </table>
-        
+            <div class="row">
+                <div class="col">
+                </div>
+                <div class="col">
+                    <a href="#" class="btn btn-primary btn-lg btn-block stage1continue" role="button">Continue</a>
+                </div>
+            </div>
+        </div>
         
         <div class="nobox">
 
@@ -402,10 +391,10 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 <tr>
                     <td colspan="2">
                         <h4>
-                            <p                 class="galmodelink  h2">Create a download link...
-                            <a id="galemail"   class="galmodelink  h2 btn btn-secondary"  href="#">Or send via email</a></p>
-                            <p                 class="galmodeemail h2">Send via email...
-                            <a id="galgal"     class="galmodeemail h2 btn btn-secondary"  href="#">Or get a link</a></p>
+                            <a               class="galmodelink  btn btn-primary">Create a download link</a>
+                            <a id="galemail" class="galmodelink  btn btn-secondary" href="#">Send via email</a>
+                            <a id="galgal"   class="galmodeemail btn btn-secondary" href="#">Create a download link</a>
+                            <a               class="galmodeemail btn btn-primary">Send via email</a>
                         </h4>
                     </td>
                     <td class="">
@@ -488,7 +477,7 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 </tr>
             
                 <tr>
-                <td class="nobox" colspan="2">
+                <td class="nobox" colspan="3">
 
                     <div class="basic_options">
                         <div class="fieldcontainer">
@@ -529,22 +518,20 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
 
                     
                     <?php if(count(Transfer::availableOptions(true)) || (Config::get('terasender_enabled') && Config::get('terasender_advanced'))) { ?>
-                    <div class="fieldcontainer">
-                        <a class="toggle_advanced_options" href="#">{tr:advanced_settings}</a>
-                    </div>
-                    
-                    <div class="advanced_options">
-                        <?php
-                        foreach(Transfer::availableOptions(true) as $name => $cfg)  {
+                    <div class="accordion" id="advanced_options">
+                      <div class="card">
+                        <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">{tr:advanced_settings}</div>
+                        <div id="collapseOne" class="collapse collapsed" aria-labelledby="headingOne" data-parent="#advanced_options">
+                          <div class="card-body">
+                          <?php
+                          foreach(Transfer::availableOptions(true) as $name => $cfg)  {
                             if( !array_key_exists($name,$upload_options_handled)) {
                                 $displayoption($name, $cfg, Auth::isGuest());
                             }
-                        }
-                        ?>
-                        
-                        
-                        <?php if (Config::get('terasender_enabled') && Config::get('terasender_advanced')) { ?>
-                        <div class="fieldcontainer">
+                          }
+                          ?>
+                          <?php if (Config::get('terasender_enabled') && Config::get('terasender_advanced')) { ?>
+                          <div class="fieldcontainer">
                             <label for="terasender_worker_count">{tr:terasender_worker_count}</label>
                             
                             <input id="terasender_worker_count"
@@ -552,11 +539,12 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                                    type="text"
                                    value="<?php echo Config::get('terasender_worker_count') ?>"/>
                             <br />
+                          </div>
+                          <?php } ?>
+                          <?php if (Config::get('terasender_enabled') && Config::get('terasender_disableable')) $displayoption('disable_terasender', array('default'=>false), false); ?>
+                          </div>
                         </div>
-                        <?php } ?>
-                        <?php if (Config::get('terasender_enabled') && Config::get('terasender_disableable')) $displayoption('disable_terasender', array('default'=>false), false); ?>
-
-
+                      </div>
                     </div>
                     <?php } /* End of advanced settings div. */ ?>
 
@@ -572,10 +560,15 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
                 </td>
                 </tr>
                 <tr>
-                    <td colspan="2">
-                    </td>
-                    <td class="right" colspan="1"> 
-                        <a href="#" class="stage2continue btn btn-primary btn-lg btn-block" role="button">Send</a>
+                    <td class="right" colspan="3"> 
+                    <div class="row">
+                        <div class="col">
+                            <a href="#" class="stage2back btn btn-primary btn-lg btn-block" role="button">Back</a>
+                        </div>
+                        <div class="col">
+                            <a href="#" class="stage2continue btn btn-primary btn-lg btn-block" role="button">Send</a>
+                        </div>
+                    </div>
                     </td>
                 </tr>                
                 
@@ -606,13 +599,6 @@ $displayoption = function($name, $cfg, $disable = false, $forcedOption = false) 
         </div>
     </form>
 
-    <?php if (Config::get('upload_graph_bulk_display')) { ?>
-        <div id="graph" class="uploadbulkgraph"><div id="graphDiv" style="width:400px; height:200px; margin:0 auto"><canvas id="speedChart"></canvas></div></div>
-
-        <script type="text/javascript" src="{path:lib/chart.js/Chart.bundle.min.js}"></script>
-        <script type="text/javascript" src="{path:js/graph.js}"></script>
-    <?php } ?>
-    
     <?php if (!Config::get('disable_directory_upload')) { ?>
        <script type="text/javascript" src="{path:js/dragdrop-dirtree.js}"></script>
     <?php } ?>
