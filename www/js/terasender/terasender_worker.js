@@ -188,6 +188,8 @@ var terasender_worker = {
                                 job.chunk.id,
                                 job.encryption_details,
                                 function (encrypted_blob) {
+                                    $this.log("AAA sending data sizediff " + (encrypted_blob.length-blob.size)
+                                              + " blob.size " + blob.size + " encrypted_blob.size " + encrypted_blob.length );
 				    xhr.setRequestHeader('X-Filesender-Encrypted', '1');
 				    xhr.send(encrypted_blob);
 				},
