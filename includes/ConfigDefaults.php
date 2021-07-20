@@ -294,6 +294,7 @@ $default = array(
     'avprogram_list' => array(),
     'avprogram_max_size_to_scan' => 100*1024*1024,
     
+    'benchmark_transfer_startup' => true,
     
     'transfer_options' => array(
         'email_me_copies' => array(

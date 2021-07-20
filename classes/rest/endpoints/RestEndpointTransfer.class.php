@@ -354,6 +354,7 @@ class RestEndpointTransfer extends RestEndpoint
         if (!Auth::isAuthenticated()) {
             throw new RestAuthenticationRequiredException();
         }
+        $tb = new TimeBlocks('transfer.post');
         
         $user = Auth::user();
 
@@ -390,6 +391,8 @@ class RestEndpointTransfer extends RestEndpoint
             }
         }
 
+        $tb->log('create/update switch begins');
+        
         if (!$creating_transfer) {
             // Add data to a specific transfer
             $transfer = Transfer::fromId($id);
@@ -443,6 +446,7 @@ class RestEndpointTransfer extends RestEndpoint
                     }
                 }
             }
+            $tb->log('create/update switch 1');
 
             
             // Must have files ...
@@ -466,6 +470,7 @@ class RestEndpointTransfer extends RestEndpoint
                 TransferOptions::ADD_ME_TO_RECIPIENTS => $allOptions[TransferOptions::ADD_ME_TO_RECIPIENTS]['default'],
                 TransferOptions::EMAIL_RECIPIENT_WHEN_TRANSFER_EXPIRES => $allOptions[TransferOptions::EMAIL_RECIPIENT_WHEN_TRANSFER_EXPIRES]['default'],
             );
+            $tb->log('create/update switch 2');
             
             foreach ($allOptions as $name => $dfn) {
                 if (in_array($name, $allowed_options)) {
@@ -480,6 +485,7 @@ class RestEndpointTransfer extends RestEndpoint
                     }
                 }
             }
+            $tb->log('create/update switch 3');
             
             $options['encryption'] = $data->encryption;
 
@@ -489,6 +495,7 @@ class RestEndpointTransfer extends RestEndpoint
                     throw new TransferMustBeEncryptedException();
                 }
             }
+            $tb->log('create/update switch 4');
 
 
             Logger::info($options);
@@ -514,6 +521,7 @@ class RestEndpointTransfer extends RestEndpoint
             ) {
                 throw new TransferNoRecipientsException();
             }
+            $tb->log('create/update switch 5');
             
             // Check if not too much recipients
             $maxrecipients = Config::get('max_transfer_recipients');
@@ -531,6 +539,7 @@ class RestEndpointTransfer extends RestEndpoint
             if ($maxsize && $size > $maxsize) {
                 throw new TransferMaximumSizeExceededException($size, $maxsize);
             }
+            $tb->log('create/update switch 6');
 
             // ... check that each file is under the per file size limit
             foreach ($data->files as $filedata) {
@@ -567,6 +576,7 @@ class RestEndpointTransfer extends RestEndpoint
                     
                 }
             }
+            $tb->log('create/update switch 7');
 
             // ... check if it exceeds host quota (if enabled) ...
             $host_quota = Config::get('host_quota');
@@ -577,6 +587,7 @@ class RestEndpointTransfer extends RestEndpoint
                     throw new TransferHostQuotaExceededException();
                 }
             }
+            $tb->log('create/update switch 8');
             
             // ... check if it exceeds user quota (if enabled)
             $user_quota = Config::get('user_quota');
@@ -586,6 +597,7 @@ class RestEndpointTransfer extends RestEndpoint
                 $user_quota = $guest->owner->quota;
             }
             
+            $tb->log('create/update switch 9');
             if ($user_quota) {
                 $remaining = $user_quota - array_sum(array_map(function ($t) {
                     return $t->size;
@@ -596,6 +608,7 @@ class RestEndpointTransfer extends RestEndpoint
                 }
             }
 
+            $tb->log('create/update switch 10');
             // See if the user who invited this guest should be able to see
             // this particular transfer from the guest.
             $guest_transfer_shown_to_user_who_invited_guest = true;
@@ -615,11 +628,14 @@ class RestEndpointTransfer extends RestEndpoint
                     }
                 }
             }
+            $tb->log('create/update switch 11');
             
             
             // Every check went well, create the transfer
             $expires = $data->expires ? $data->expires : Transfer::getDefaultExpire();
+            $tb->log('create/update switch calling t::c top ');
             $transfer = Transfer::create($expires, $guest ? $guest->email : $data->from);
+            $tb->log('create/update switch t::c complete ');
 
             $transfer->guest_transfer_shown_to_user_who_invited_guest = $guest_transfer_shown_to_user_who_invited_guest;
             
@@ -636,6 +652,7 @@ class RestEndpointTransfer extends RestEndpoint
             if (Config::get('transfer_recipients_lang_selector_enabled') && $data->lang) {
                 $transfer->lang = $data->lang;
             }
+            $tb->log('create/update switch 20');
             
             // Guest owner decides about guest options
             if ($guest) {
@@ -664,8 +681,10 @@ class RestEndpointTransfer extends RestEndpoint
                 $dummy1 = $transfer->salt;
             }
 
+            $tb->log('create/update switch 22');
             // Mandatory to add recipients and files
             $transfer->save(); 
+            $tb->log('create/update switch 23');
 
             
             // Get banned extensions
@@ -705,6 +724,7 @@ class RestEndpointTransfer extends RestEndpoint
                     throw new TransferRejectedException('{invalid_options}');
                 }
             }
+            $tb->log('create/update switch 24');
             
             // Add recipient(s) depending on options
             if ($transfer->getOption(TransferOptions::GET_A_LINK)) {
@@ -727,7 +747,9 @@ class RestEndpointTransfer extends RestEndpoint
                 $transfer->delete();
                 throw new StorageNotEnoughSpaceLeftException($transfer->size);
             }
-            
+
+//            usleep(100000);
+            $tb->log('create/update switch 25');
             // Run transfer creation validators if defined in config, delete newly created transfers if any fails
             $validators = Config::get('transfer_validators');
             if (is_array($validators)) {
@@ -748,6 +770,7 @@ class RestEndpointTransfer extends RestEndpoint
                 }
             }
             
+            $tb->log('create/update switch 26');
             // Tag the transfer as started, that is, ready for file upload
             $transfer->start();
             
