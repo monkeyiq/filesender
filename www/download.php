@@ -175,7 +175,7 @@ function downloadArchive($transfer, $recipient, $files_ids, $recently_downloaded
     } catch (Exception $e) {
         Logger::info('tar test had exception');
         Logger::info('tar test exception message ' . $e->getMessage());
-        
+        throw $e;
     }
     Logger::info('tar test end');
     
