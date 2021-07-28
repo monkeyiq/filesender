@@ -168,8 +168,16 @@ function downloadArchive($transfer, $recipient, $files_ids, $recently_downloaded
     // Send the ZIP
     if(!$recently_downloaded)
         Logger::logActivity(LogEventTypes::ARCHIVE_DOWNLOAD_STARTED, $transfer, $recipient);
-    
-    $result = $zipper->streamArchive($recipient);
+
+    Logger::info('tar test begin');
+    try {
+        $result = $zipper->streamArchive($recipient);
+    } catch (Exception $e) {
+        Logger::info('tar test had exception');
+        Logger::info('tar test exception message ' . $e->getMessage());
+        
+    }
+    Logger::info('tar test end');
     
     if(!$recently_downloaded)
         Logger::logActivity(LogEventTypes::ARCHIVE_DOWNLOAD_ENDED, $transfer, $recipient);

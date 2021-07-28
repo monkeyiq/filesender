@@ -175,10 +175,13 @@ class Archiver
      */
     public function streamArchive( $recipient = null )
     {
+        Logger::info('tar test streamArchive(1)');
+        
         $fuid = substr(hash('sha1', implode('+', array_keys($this->files))), -8);
         $file = reset($this->files);
         $tid = $file['data']->transfer_id;
         $filename = 'transfer_' . $tid . '_files_' . $fuid;
+        Logger::info('tar test streamArchive(2) fn ' . $filename );
 
         //
         // This is a little less than optimal having two codepaths.
@@ -220,38 +223,53 @@ class Archiver
 
         } else {
 
+            Logger::info('tar test streamArchive(3)');
             $contentLength = $this->getZipSize( $filename );
+            Logger::info('tar test streamArchive(4)');
             header("Content-Length: $contentLength");
             $opts['send_http_headers'] = true;
             
+            Logger::info('tar test streamArchive(5)');
             $outstream = fopen('php://output','w');
+            Logger::info('tar test streamArchive(6)');
             $archive = new \Barracuda\ArchiveStream\ZipArchive($filename . ".zip",$opts,$filename,$outstream);
+            Logger::info('tar test streamArchive(7) loop top');
             
             
             // send each file
             foreach ($this->files as $k => $data) {
+                Logger::info('tar test streamArchive(7.1)T');
                 $file = $data['data'];
                 $transfer = $file->transfer;
                 if ($recipient) {
                     Logger::logActivity(LogEventTypes::DOWNLOAD_STARTED, $file, $recipient);
                 }
+                Logger::info('tar test streamArchive(7.2)');
 
                 $archivedName = $this->getArchivedFileName( $file );
+                Logger::info('tar test streamArchive(7.3)');
                 
                 $stream = $file->getStream();
+                Logger::info('tar test streamArchive(7.4)');
                 $this->addFileToArchive( $archive, $file );
+                Logger::info('tar test streamArchive(7.5)');
                 fclose($stream);
+                Logger::info('tar test streamArchive(7.6)');
             }
+            Logger::info('tar test streamArchive(8) loop end');
 
             $archive->finish();        
+            Logger::info('tar test streamArchive(9)');
         }
 
         if ($recipient) {
+            Logger::info('tar test streamArchive(10)');
             foreach ($this->files as $data) {
                 $file = $data['data'];
                 Logger::logActivity(LogEventTypes::DOWNLOAD_ENDED, $file, $recipient);
             }
         }
+        Logger::info('tar test streamArchive(11) returning');
         
         // ok
         return true;
