@@ -87,18 +87,16 @@ class Archiver
     }
 
 
-    public function getZipSize($filename) {
+    public function getZipSize($filename,$opts) {
 
         Logger::info('tar test getZipSize(top)');
-        $tfn = tempnam( Filesystem::getTempDirectory(), 'szf');
-        $outstream = fopen($tfn,'w');
-        Logger::info('tar test getZipSize(2)');
 
         $contentsz = 0;
         // work out the content length
         $tfn = tempnam( Filesystem::getTempDirectory(), 'szf');
         $outstream = fopen($tfn,'w');
         Logger::info('tar test getZipSize(3)');
+        Logger::info('tar test getZipSize(3) outstream ' . $outstream );
         $opts['send_http_headers'] = false;
         Logger::info('tar test getZipSize(4)');
         $archive = new \Barracuda\ArchiveStream\ZipArchive($filename . ".zip",$opts,$filename,$outstream);
@@ -109,15 +107,18 @@ class Archiver
         Logger::info('tar test getZipSize(loop)');
         // send each file
         foreach ($this->files as $k => $data) {
+            Logger::info('tar test getZipSize(looping TOP)' );
             $file = $data['data'];
             $fileopts = array();
             $transfer = $file->transfer;
             $archivedName = $this->getArchivedFileName( $file );
             $contentsz += $file->size;
             
-            Logger::info('tar test getZipSize(looping) name ' . $archivedName . ' sz ' . $file->size);
+            Logger::info('tar test getZipSize(loopingA) name ' . $archivedName . ' sz ' . $file->size);
 	    $archive->init_file_stream_transfer($archivedName, $file->size, $fileopts);
+            Logger::info('tar test getZipSize(loopingB) name ' . $archivedName . ' sz ' . $file->size);
 	    $archive->complete_file_stream();        
+            Logger::info('tar test getZipSize(loopingC) name ' . $archivedName . ' sz ' . $file->size);
         }
 
         Logger::info('tar test getZipSize(10)');
@@ -234,9 +235,15 @@ class Archiver
 
         } else {
 
+            $opts = array();
+            // we send the headers with the main TarArchive not the
+            // one that just calculates the content length.
+            $opts['send_http_headers'] = false; 
+            $opts['content_type'] = 'application/x-zip';
+            
             Logger::info('tar test streamArchive(3)');
-            $contentLength = $this->getZipSize( $filename );
-            Logger::info('tar test streamArchive(4)');
+            $contentLength = $this->getZipSize( $filename, $opts );
+            Logger::info('tar test streamArchive(4) cl ' . $contentLength );
             header("Content-Length: $contentLength");
             $opts['send_http_headers'] = true;
             

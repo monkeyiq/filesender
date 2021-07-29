@@ -131,6 +131,8 @@ try {
         manageOptions($ret, $transfer, $recipient, $recently_downloaded);
     
 } catch (Exception $e) {
+    Logger::info('tar test main() have exception.');
+    Logger::info('tar test main() have exception. exception message ' . $e->getMessage());
     $storable = new StorableException($e);
     $path = GUI::path() . '?s=exception&exception=' . $storable->serialize();
     header('Location: ' . $path);
@@ -175,7 +177,7 @@ function downloadArchive($transfer, $recipient, $files_ids, $recently_downloaded
     } catch (Exception $e) {
         Logger::info('tar test had exception');
         Logger::info('tar test exception message ' . $e->getMessage());
-        throw $e;
+//        throw $e;
     }
     Logger::info('tar test end');
     
