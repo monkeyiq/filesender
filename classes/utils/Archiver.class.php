@@ -89,18 +89,24 @@ class Archiver
 
     public function getZipSize($filename) {
 
+        Logger::info('tar test getZipSize(top)');
         $tfn = tempnam( Filesystem::getTempDirectory(), 'szf');
         $outstream = fopen($tfn,'w');
+        Logger::info('tar test getZipSize(2)');
 
         $contentsz = 0;
         // work out the content length
         $tfn = tempnam( Filesystem::getTempDirectory(), 'szf');
         $outstream = fopen($tfn,'w');
+        Logger::info('tar test getZipSize(3)');
         $opts['send_http_headers'] = false;
+        Logger::info('tar test getZipSize(4)');
         $archive = new \Barracuda\ArchiveStream\ZipArchive($filename . ".zip",$opts,$filename,$outstream);
+        Logger::info('tar test getZipSize(5)');
         $filename .= '.zip';
         $stream = null;
         
+        Logger::info('tar test getZipSize(loop)');
         // send each file
         foreach ($this->files as $k => $data) {
             $file = $data['data'];
@@ -109,16 +115,21 @@ class Archiver
             $archivedName = $this->getArchivedFileName( $file );
             $contentsz += $file->size;
             
+            Logger::info('tar test getZipSize(looping) name ' . $archivedName . ' sz ' . $file->size);
 	    $archive->init_file_stream_transfer($archivedName, $file->size, $fileopts);
 	    $archive->complete_file_stream();        
         }
 
+        Logger::info('tar test getZipSize(10)');
         $archive->finish();        
+        Logger::info('tar test getZipSize(11)');
 
         fflush($outstream);
         $ret = $contentsz + filesize($tfn);
         fclose($outstream);
+        Logger::info('tar test getZipSize(12)');
         unlink($tfn);
+        Logger::info('tar test getZipSize(e) ret ' . $ret );
 
         return $ret;
     }
