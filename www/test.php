@@ -81,14 +81,33 @@ try
         $config['driver_options']
     );
 
+    echo "<h1>Database attributes</h1>\n";
+    $attributes = array(
+        "AUTOCOMMIT", "ERRMODE", "CASE", "CLIENT_VERSION", "CONNECTION_STATUS",
+        "ORACLE_NULLS", "PERSISTENT", "PREFETCH", "SERVER_INFO", "SERVER_VERSION",
+        "TIMEOUT"
+    );
+
+    foreach ($attributes as $val) {
+        try {
+            echo "PDO::ATTR_$val: ";
+            echo $instance->getAttribute(constant("PDO::ATTR_$val")) . "";
+        } catch(Exception $e) {
+            echo "exception...";
+        }
+        echo "<br/>\n";
+    }    
+
+    echo "<h1>trying to access database</h1>\n";
+    
     $id = 1;
     $statement = $instance->prepare('SELECT * FROM '.Transfer::getDBTable().' order by id desc limit 1');
     $statement->execute(array());
     $records = $statement->fetchAll();
     foreach ($records as $r) {
-        echo 'found id ' . $r['id'];
+        echo 'found id ' . $r['id'] . "\n";
     }
-    echo "<br/>done";
+    echo "<br/>done\n";
 
 } catch(Exception $e) {
     // If all exceptions are catched as expected we should not get there
