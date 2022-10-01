@@ -69,6 +69,8 @@ class Lang
      * Does the translation allows replacements
      */
     private $allow_replace = true;
+
+    private static $requested_page_translations = array();
     
     /**
      * Get available languages
@@ -427,6 +429,13 @@ class Lang
         
         self::$loading = false;
     }
+
+    public static function dumpRequestedPageTranslationIDs()
+    {
+        Logger::debug("Translation string id sz " . count(self::$requested_page_translations) );
+        sort(self::$requested_page_translations);
+        Logger::dump("Translation string id list ", self::$requested_page_translations );
+    }
     
     /**
      * Translate a string
@@ -437,6 +446,12 @@ class Lang
      */
     public static function translate($id)
     {
+        self::$requested_page_translations[] = $id;
+        /// See the strings that are logged by making everything 'x'
+        if( Utilities::isTrue(Config::get('translate_server_side_to_x'))) {
+            return new Translation('x');
+        }
+        
         // Load dictionaries if not already done
         self::loadDictionaries();
         
