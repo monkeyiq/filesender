@@ -68,6 +68,11 @@ $(function() {
         
         el.toggleClass('expanded', expanded).toggleClass('fa-plus-circle', !expanded).toggleClass('fa-minus-circle', expanded);
     });
+
+    $('#showRequestedTerms').on('click', function() {
+        lang.showRequestedTerms();
+        return false;
+    });
     
     // Clone attributes for easier access
     $('.transfer_details').each(function() {

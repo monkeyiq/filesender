@@ -38,6 +38,7 @@ $maybe_display_aggregate_statistics_menu = false;
                 }
                     
             }
+            echo '<li><a id="showRequestedTerms" class="showRequestedTerms">TERMS</a></li>';
             
             ?>
         </ul>

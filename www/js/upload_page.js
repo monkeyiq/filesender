@@ -1169,6 +1169,8 @@ filesender.ui.startUpload = function() {
             );
         };
 
+        lang.showRequestedTerms();
+        
         var p = filesender.ui.alert('success', lang.tr('done_uploading'), close);
         
         var t = null;
@@ -1796,6 +1798,12 @@ $(function() {
             filesender.ui.nodes.encryption.password.attr('type','password');
         }
         filesender.ui.nodes.encryption.password.stop().effect('highlight',{},500);
+        return false;
+    });
+
+
+    $('#showRequestedTerms').on('click', function() {
+        lang.showRequestedTerms();
         return false;
     });
     
