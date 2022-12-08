@@ -1301,6 +1301,9 @@ filesender.ui.startUpload = function() {
         if( usp.has('vid')) {
             reditectargs['vid'] = usp.get('vid');
         }
+
+        lang.showRequestedTerms();
+        
         var redirect_url = filesender.ui.transfer.options.redirect_url_on_complete;
         
         if(redirect_url) {
@@ -1889,6 +1892,11 @@ $(function() {
         {
             $(this).select();
         }
+    });
+
+    $('#showRequestedTerms').on('click', function() {
+        lang.showRequestedTerms();
+        return false;
     });
     
 

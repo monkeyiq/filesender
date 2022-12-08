@@ -1,0 +1,28 @@
+Transfer audit
+What to do ?
+action
+auditlog
+cancel
+confirm_dialog
+confirm_extend_expiry
+date
+delete_transfer_nicely
+delete_transfer_roughly
+email_sent
+extend
+extend_expiry_date
+extended
+filtered_transfer_log
+ip
+ok
+report_event_file_uploaded
+report_event_transfer_available
+report_event_transfer_started
+report_event_upload_ended
+report_event_upload_started
+send_to_my_email
+size_unit
+transfer_deleted
+transfer_expiry_extension_count_exceeded
+view_full_log
+what_to_do

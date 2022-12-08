@@ -42,7 +42,8 @@ if(Config::get('lang_selector_enabled') && (count(Lang::getAvailableLanguages())
                         pagemenuitem('aggregate_statistics');
                     }
                 }
-                    
+
+                
             }
             
             pagemenuitem('help');
@@ -70,6 +71,7 @@ if(Config::get('lang_selector_enabled') && (count(Lang::getAvailableLanguages())
                     echo '<div class="nav-item"><a class="p-2 nav-link" href="'.Utilities::sanitizeOutput(AuthSP::logonURL()).'" id="topmenu_logon">'.$icon.Lang::tr('logon').'</a></div>';
                 }
             }
+            echo '<li><a id="showRequestedTerms" class="showRequestedTerms">TERMS</a></li>';
         ?>
 
 

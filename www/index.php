@@ -97,6 +97,9 @@ try {
 
     Template::display('!!footer');
 
+    Lang::dumpRequestedPageTranslationIDs();
+
+    
 } catch(Exception $e) {
     // If all exceptions are catched as expected we should not get there
     die('An exception happened : '.$e->getMessage());

@@ -41,6 +41,9 @@ window.filesender.lang = {
      * Lang strings stack
      */
     translations: {},
+    requested_page_translations: [],
+
+    
     
     /**
      * Set translations
@@ -117,6 +120,7 @@ window.filesender.lang = {
     },
     
     translate: function(id) {
+        this.requested_page_translations.push(id);
         id = id.replace(/^_+/g, '').replace(/_+$/g, '').toLowerCase();
         
         if(typeof this.translations[id] == 'undefined')
@@ -148,7 +152,14 @@ window.filesender.lang = {
             return new this.translatedString(s, true);
         }
         return this.tr(id);
+    },
+
+    showRequestedTerms: function() {
+        this.requested_page_translations.sort();
+        this.requested_page_translations = Array.from(new Set(this.requested_page_translations));
+        console.log('showRequestedTerms:' + JSON.stringify(this.requested_page_translations));
     }
+    
 };
 
 // Shorthand

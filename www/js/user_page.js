@@ -134,6 +134,11 @@ $(function() {
         return false;
     });
 
+    $('#showRequestedTerms').on('click', function() {
+        lang.showRequestedTerms();
+        return false;
+    });
+    
     $('.api_secret_delete a').button().on('click', function(e) {
         e.stopPropagation();
         e.preventDefault();
