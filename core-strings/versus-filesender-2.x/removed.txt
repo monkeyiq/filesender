@@ -1,0 +1,10 @@
+--- all-filesender-2x.log	2022-12-08 19:45:13.230605182 1000
+-collection
+-drag_and_drop
+-file_encryption_description
+-guest
+-guests
+-guests_transfers
+-no_guests
+-pager_more
+-select_directory
