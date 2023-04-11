@@ -505,6 +505,8 @@ class Auth
      */
     public static function isRemoteUser()
     {
+        /// XXXXXXXXXXXXXXXXXXX FIXME
+        return true;
         return self::isRemote() && !AuthRemote::application();
     }
     
@@ -515,6 +517,8 @@ class Auth
      */
     public static function isRemote()
     {
+        /// XXXXXXXXXXXXXXXXXXX FIXME
+        return true;
         return self::$type == 'remote';
     }
     

@@ -1376,7 +1376,7 @@ window.filesender.transfer = function() {
     /**
      * Chunk by chunk upload
      */
-    this.uploadChunk = function() {
+    this.uploadChunk = async function() {
         if (this.status == 'stopped')
             return;
         
@@ -1412,6 +1412,15 @@ window.filesender.transfer = function() {
         this.recordUploadStartedInWatchdog(worker_id,file);
 
         var encryption_details = transfer.getEncryptionMetadata( file );
+        console.log("transfer.js putChunk()");
+
+        console.log(typeof blob);
+        if( typeof blob == 'object' ) {
+            console.log(blob.constructor.name);
+            if(blob.constructor.name == 'Blob') {
+                blob = await blob.text();
+            }
+        }
         
         this.uploader = filesender.client.putChunk(
             file, blob, offset,
