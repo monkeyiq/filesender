@@ -12,10 +12,11 @@ implementation of WebCrypto to enable this functionality.
 
 Usage:
 
+```
 $ cd scripts/client/nodeclient
 $ export NODE_TLS_REJECT_UNAUTHORIZED='0'
 $ node upload.js 
-
+```
 
 The code here uses code from 
 https://github.com/br00k/filesender/commit/5330c2b361a9e8ac3749181bac1cab37707be70e
