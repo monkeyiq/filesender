@@ -304,7 +304,10 @@ window.filesender.terasender = {
             if(error.details) window.filesender.log(error.details); // Whatever type it is ...
         }
         
-
+        window.filesender.log('CCC [terasender ' + (origin ? origin : 'driver') + ' error] ' + error.message + (error.details ? ', details follow :' : ''));
+        if(error.details) window.filesender.log('CCC ' + error.details); // Whatever type it is ...
+        
+        
         if( this.receiver && this.receiver.onError ) {
             this.receiver.onError( error );
         }

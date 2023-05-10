@@ -381,6 +381,7 @@ var terasender_worker = {
      * Report progress of current job
      */
     reportProgress: function(loaded,total) {
+        
         var now = (new Date()).getTime();
         var ratio = loaded/total;
         if (ratio < 0.95 && this.progress_reported && this.progress_reported > (now - 300))
@@ -388,6 +389,7 @@ var terasender_worker = {
         
         this.progress_reported = now;
         
+        this.log('id ' + worker.id + ' progress... ' );
         this.log('Job file:' + this.job.file.id + '[' + this.job.chunk.start + '...' + this.job.chunk.end + '] is ' + (100 * ratio).toFixed(1) + '% done ' + loaded + '/' + total);
         if (this.job.encryption) { 
             this.job.fine_progress = Math.floor(ratio * (this.job.chunk.end - this.job.chunk.start));
@@ -462,6 +464,8 @@ var terasender_worker = {
             this.security_token = new_security_token;
             this.reportSecurityTokenChange(new_security_token);
         }
+
+        this.log('id ' + worker.id + ' BBB status ' + status );
         
         // Ignore 40x and 50x if undergoing maintenance
         if(status >= 400 && this.maintenance) {
@@ -485,6 +489,7 @@ var terasender_worker = {
             this.reportDone();
         }else if(status == 0) { // Request cancelled (browser refresh or such)
 
+            this.log('id ' + worker.id + ' AAA  status ' + status );
             this.send_attempts++;
             
             setTimeout(function() {
@@ -495,6 +500,7 @@ var terasender_worker = {
                 }
                 else {
                     // Let the manager know something has really hit the fan
+                    worker.log('id ' + worker.id + ' CCC FAILED2 ' );
                     worker.sendCommand('jobFailed', worker.job);
                 }
             }, 1000);
@@ -504,6 +510,7 @@ var terasender_worker = {
             return;
             
         }else{ // We have an error
+            this.log('id ' + worker.id + ' AAA  msg ' + xhr.responseText );
             var msg = xhr.responseText.replace(/^\s+/, '').replace(/\s+$/, '');
             
             try {
@@ -534,6 +541,7 @@ var terasender_worker = {
                     }
                     else {
                         // Let the manager know something has really hit the fan
+                        worker.log('id ' + worker.id + ' CCC FAILED1 ' );
                         worker.sendCommand('jobFailed', worker.job);
                     }
                 }
@@ -551,6 +559,9 @@ var terasender_worker = {
      * Timeout callback
      */
     timeout: function() {
+
+        this.log('id ' + worker.id + ' timeout!' );
+        
         if(this.maintenance) { // If under maintenance retrigger job after a while
             var worker = this;
             this.maintenance = setTimeout(function() {
