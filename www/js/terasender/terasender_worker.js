@@ -388,7 +388,8 @@ var terasender_worker = {
             return; // No need to report progress more than 1 time per 300ms (especially if fine_progress)
         
         this.progress_reported = now;
-        
+
+        var worker = this;
         this.log('id ' + worker.id + ' progress... ' );
         this.log('Job file:' + this.job.file.id + '[' + this.job.chunk.start + '...' + this.job.chunk.end + '] is ' + (100 * ratio).toFixed(1) + '% done ' + loaded + '/' + total);
         if (this.job.encryption) { 
@@ -465,6 +466,7 @@ var terasender_worker = {
             this.reportSecurityTokenChange(new_security_token);
         }
 
+        var worker = this;
         this.log('id ' + worker.id + ' BBB status ' + status );
         
         // Ignore 40x and 50x if undergoing maintenance

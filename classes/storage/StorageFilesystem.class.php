@@ -400,6 +400,16 @@ class StorageFilesystem
     public static function writeChunk(File $file, $data, $offset = null)
     {
         $chunk_size = strlen($data);
+
+        
+        if( Config::get("TESTING_do_not_write_data")) {
+//            Logger::error("AAA not writing data ");
+            return array(
+                'offset' => $offset,
+                'written' => $chunk_size
+            );
+        }
+
         
         $path = static::buildPath($file);
 
