@@ -439,18 +439,18 @@ class StorageFilesystem
 
                     // Close writer
                     if (!fflush($fh)) {
-                        Logger::info("writeChunk(err fflush) fileid: " . $file->id . " offset: $offset ");
+                        Logger::error("writeChunk(err fflush) fileid: " . $file->id . " offset: $offset ");
                         throw new StorageFilesystemCannotWriteException($file_path.' (lock)', $file);
                     }
                     
                     // Close writer
                     if (!fclose($fh)) {
-                        Logger::info("writeChunk(err fclose) fileid: " . $file->id . " offset: $offset ");
+                        Logger::error("writeChunk(err fclose) fileid: " . $file->id . " offset: $offset ");
                         throw new StorageFilesystemCannotWriteException($file_path.' (lock)', $file);
                     }
 
                     if ($chunk_size != $written) {
-                        Logger::info("writeChunk(err size diff) fileid: " . $file->id . " offset: $offset ");
+                        Logger::error("writeChunk(err size diff) fileid: " . $file->id . " offset: $offset ");
                         Logger::info('writeChunk() Can not write to : '.$chunkFile);
                         throw new StorageFilesystemCannotWriteException('writeChunk( '.$file_path, $file, $data, $offset, $written);
                     }
@@ -466,7 +466,7 @@ class StorageFilesystem
 
                         $t = fopen($file_path, 'rb');
                         if( !$t ) {
-                            Logger::info("writeChunk(err verify cant open file) fileid: " . $file->id . " offset: $offset ");
+                            Logger::error("writeChunk(err verify cant open file) fileid: " . $file->id . " offset: $offset ");
                             throw new StorageFilesystemCannotWriteException($file_path, $file);
                         }
                         fseek($t, $offset);
@@ -475,7 +475,7 @@ class StorageFilesystem
                         $tHash = \hash($algo, $tdata);
 
                         if( $tHash != $dataHash ) {
-                            Logger::info("writeChunk(err verify hashes) fileid: " . $file->id . " offset: $offset expected $dataHash got $tHash");
+                            Logger::error("writeChunk(err verify hashes) fileid: " . $file->id . " offset: $offset expected $dataHash got $tHash");
                             throw new StorageFilesystemCannotWriteException($file_path, $file);
                         }
                         Logger::info("writeChunk(verify ok) fileid: " . $file->id . " offset: $offset ");
