@@ -403,46 +403,106 @@ class StorageFilesystem
         
         $path = static::buildPath($file);
 
-        $free_space = disk_free_space($path);
-        if ($free_space <= $chunk_size) {
-            throw new StorageNotEnoughSpaceLeftException($chunk_size);
+        if (!Config::get('storage_filesystem_ignore_disk_full_check')) {
+        
+            $free_space = disk_free_space($path);
+            if ($free_space <= $chunk_size) {
+                Logger::info("writeChunk(ERR out-of-disk) fileid: " . $file->id . " offset: $offset ");
+                throw new StorageNotEnoughSpaceLeftException($chunk_size);
+            }
         }
         
         $file_path = $path.static::buildFilename($file);
+
+        Logger::info("writeChunk(top) fileid: " . $file->id . " offset: $offset ");
+
+        $validUpload = false;
+        for ($attempt = 1; $attempt <= Config::get('storage_filesystem_write_retry'); $attempt++) {
+            $isLastAttempt = $attempt >= Config::get('storage_filesystem_write_retry');
+            try {
         
-        // Open file for writing
-        $mode = file_exists($file_path) ? 'rb+' : 'wb+'; // Create file if it does not exist
-        if ($fh = fopen($file_path, $mode)) {
-            // Sets position of file pointer
-            if ($offset) {
-                fseek($fh, $offset); // Known offset
-            } elseif (is_null($offset)) {
-                fseek($fh, 0, SEEK_END); // End of file if no offset given
+                // Open file for writing
+                $mode = file_exists($file_path) ? 'rb+' : 'wb+'; // Create file if it does not exist
+                if ($fh = fopen($file_path, $mode)) {
+                    // Sets position of file pointer
+                    if ($offset) {
+                        fseek($fh, $offset); // Known offset
+                    } elseif (is_null($offset)) {
+                        fseek($fh, 0, SEEK_END); // End of file if no offset given
+                    }
+
+                    // Get offset
+                    $offset = ftell($fh);
+
+                    // Try to write chunk
+                    $written = fwrite($fh, $data, $chunk_size);
+
+                    // Close writer
+                    if (!fflush($fh)) {
+                        Logger::info("writeChunk(err fflush) fileid: " . $file->id . " offset: $offset ");
+                        throw new StorageFilesystemCannotWriteException($file_path.' (lock)', $file);
+                    }
+                    
+                    // Close writer
+                    if (!fclose($fh)) {
+                        Logger::info("writeChunk(err fclose) fileid: " . $file->id . " offset: $offset ");
+                        throw new StorageFilesystemCannotWriteException($file_path.' (lock)', $file);
+                    }
+
+                    if ($chunk_size != $written) {
+                        Logger::info("writeChunk(err size diff) fileid: " . $file->id . " offset: $offset ");
+                        Logger::info('writeChunk() Can not write to : '.$chunkFile);
+                        throw new StorageFilesystemCannotWriteException('writeChunk( '.$file_path, $file, $data, $offset, $written);
+                    }
+
+                    
+                    // recheck md5 of data and stored data
+                    if (Config::get('storage_filesystem_hash_check')) {
+
+                        Logger::info("writeChunk(v) fileid: " . $file->id . " offset: $offset ");
+                        
+                        $algo = 'md5';
+                        $dataHash = \hash($algo, $data);
+
+                        $t = fopen($file_path, 'rb');
+                        if( !$t ) {
+                            Logger::info("writeChunk(err verify cant open file) fileid: " . $file->id . " offset: $offset ");
+                            throw new StorageFilesystemCannotWriteException($file_path, $file);
+                        }
+                        fseek($t, $offset);
+                        $tdata = fread($t, $chunk_size);
+                        fclose($t);
+                        $tHash = \hash($algo, $tdata);
+
+                        if( $tHash != $dataHash ) {
+                            Logger::info("writeChunk(err verify hashes) fileid: " . $file->id . " offset: $offset expected $dataHash got $tHash");
+                            throw new StorageFilesystemCannotWriteException($file_path, $file);
+                        }
+                        Logger::info("writeChunk(verify ok) fileid: " . $file->id . " offset: $offset ");
+                    }
+                  
+                    Logger::info("writeChunk(bot) fileid: " . $file->id . " offset: $offset ");
+                    return array(
+                        'offset' => $offset,
+                        'written' => $written
+                    );
+                } else {
+                    Logger::info("writeChunk(err) fileid: " . $file->id . " offset: $offset ");
+                    throw new StorageFilesystemCannotWriteException($file_path, $file);
+                }
+
+            } catch (ChunkWriteException $e) {
+                if ($isLastAttempt) {
+                    Logger::error("writeChunk() failed: {$chunkFile} {$e->getMessage()}");
+                    // Re-throw any StorageFilesystemCannotWriteException so that we can add extra information
+                    throw new StorageFilesystemCannotWriteException($filePath, $file, $data, $offset, $written);
+                } else {
+                    Logger::debug("writeChunk() failed: {$chunkFile} {$e->getMessage()}");
+                }
             }
-
-            // Get offset
-            $offset = ftell($fh);
-
-            // Try to write chunk
-            $written = fwrite($fh, $data, $chunk_size);
-
-            // Close writer
-            if (!fclose($fh)) {
-                throw new StorageFilesystemCannotWriteException($file_path.' (lock)', $file);
-            }
-
-            if ($chunk_size != $written) {
-                Logger::info('writeChunk() Can not write to : '.$chunkFile);
-                throw new StorageFilesystemCannotWriteException('writeChunk( '.$file_path, $file, $data, $offset, $written);
-            }
-
-            return array(
-                'offset' => $offset,
-                'written' => $written
-            );
-        } else {
-            throw new StorageFilesystemCannotWriteException($file_path, $file);
+            usleep(Config::get('storage_filesystem_retry_sleep'));
         }
+                
     }
     
     /**
