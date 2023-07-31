@@ -120,6 +120,8 @@ if (!defined('__CSRF_PROTECTOR__')) {
          */
         public static function init($length = null, $action = null, $logger = null)
         {
+            error_log("csrfprotector::init...top");
+            
             /*
              * Check if init has already been called.
              */
@@ -154,6 +156,7 @@ if (!defined('__CSRF_PROTECTOR__')) {
             } else {
                 throw new configFileNotFoundException("OWASP CSRFProtector: configuration file not found for CSRFProtector!");
             }
+            error_log("csrfprotector::init...2");
 
             //overriding length property if passed in parameters
             if ($length != null)
@@ -195,6 +198,7 @@ if (!defined('__CSRF_PROTECTOR__')) {
                 self::$logger = new csrfpDefaultLogger(self::$config['logDirectory']);
             }
 
+            error_log("csrfprotector::init...3");
             // Authorise the incoming request
             self::authorizePost();
 
@@ -397,6 +401,7 @@ if (!defined('__CSRF_PROTECTOR__')) {
          */
         public static function refreshToken()
         {
+            error_log("csrfprotector::refreshToken... top ");
             $token = self::generateAuthToken();
 
             if (!isset($_SESSION[self::$config['CSRFP_TOKEN']])
@@ -422,6 +427,8 @@ if (!defined('__CSRF_PROTECTOR__')) {
              *     (bool) self::$cookieConfig->secure);
              */
 
+            error_log("csrfprotector::refreshToken...cooking");
+            
             // PHP 7.3 only. Adds SameSite = Strict.
             setcookie(
                 self::$config['CSRFP_TOKEN'], 

@@ -113,7 +113,9 @@ class Security
         }
         
         if( $checkToken ) {
+            error_log("security checkToken...1");
             include_once(__DIR__ . '/../../lib/vendor/owasp/csrf-protector-php/libs/csrf/csrfprotector.php');
+            error_log("security checkToken...2");
             
             if( !self::$filesender_csrf_protector_logger ) {
                 self::$filesender_csrf_protector_logger = new FileSendercsrfProtectorLogger();
@@ -126,6 +128,7 @@ class Security
                 csrfProtector::setErrorHandler( new FileSendercsrfProtectorErrorHandler($canReturnJSON));
             }
             csrfProtector::init($length,$action,$logger);
+            error_log("security checkToken...3");
         }
     }
 
