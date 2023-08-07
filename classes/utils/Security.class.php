@@ -110,6 +110,7 @@ class Security
         }
 
         error_log("security checkToken...mid1 $checkToken");
+        error_log("security checkToken...mid1.1 is guest " . Auth::isGuest());
         if (Auth::isGuest()) {
             $checkToken = true;
         }
