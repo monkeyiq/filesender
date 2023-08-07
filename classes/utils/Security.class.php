@@ -98,6 +98,7 @@ class Security
     {
         $checkToken = Utilities::isTrue(Config::get('owasp_csrf_protector_enabled'));
         $method = Utilities::getHTTPMethod();
+        error_log("security checkToken...top $checkToken");
         
         //
         // Remote API users and applications do not need to do CSRF
@@ -108,9 +109,11 @@ class Security
             }
         }
 
+        error_log("security checkToken...mid1 $checkToken");
         if (Auth::isGuest()) {
             $checkToken = true;
         }
+        error_log("security checkToken...mid2 $checkToken");
         
         if( $checkToken ) {
             error_log("security checkToken...1");
