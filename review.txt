@@ -1,0 +1,527 @@
+Introduction
+------------
+
+The review was performed on my copy of the RNP PR at branch ui2023
+taken from comit 13d5f6f8.
+https://github.com/filesender/filesender/pull/1530
+
+The only changes I have made locally in ui2023 were to enable
+functionality to complete. A patch showing the differences between
+ui2023 and 13d5f6f8 is attached.
+
+The patch reviewed was from ui2023 (13d5f6f8) to upstream/development3
+without whitespace considered.
+
+Almost all testing was done in Chome. It is assumed that Firefox,
+Safari, et al have been tested by RNP and present well.
+
+Some general comments. Large amounts of whitespace only changes in a
+PR are impolite. I have seen some projects reject a PR based on that
+without further consideration. The idea "Give what you get" for
+whitespace and formatting. 
+
+It would have been nice for the PR to include a summary of the
+contained code changes. Especially for such a large PR. For example:
+Many new CSS files are introduced. UI elements are updated to use
+these CSS classes. Some code has been moved from existing pages to new
+pages in order to provide an improved user experience.... and so on.
+Otherwise the reader has to piece this knowledge together as they go.
+
+A few comments about the design. I assume these are expressly desired
+by user interface experts though I thought I should note them here to
+ensure the choices are explicitly what is sought. The langauge drop
+down in the menu is removed. Logoff is now in account settings
+(security issue). There is no pause, stop, or resume UI on the upload
+page which may lead to frustration when people are wishing to pause an
+upload to take a video call for example.
+
+(I1)
+As it is security related I again mention the potential security issue
+having logoff only offered in account settings.
+
+(I2)
+Have dark and "RNP" theme. Generally the company or oganization name
+is not included in generic light themes.
+www/css/themes/dark.css
+www/css/themes/rnp.css
+
+Where interface use is tested as apposed to code inspection I have not
+checked each reported instance to see if it was working in
+development3. I have conducted two main review mindsets, (a) testing
+functionality in the web interface itself, (b) direct inspection of
+the code, and (c) inspection of database tuples resulting from object
+creating in development3 as apposed to ui2023. An attempt has been
+made to report these separately below though some may be in the other
+respective (a) or (b) section. I would have hoped that (c) was already
+covered prior to the PR creation.
+
+The following presents (a) as General functionality, (b) as Code
+review and (c) as Object creation.
+
+
+
+General functionality
+---------------------
+
+ (G1)
+ Hard coding the number of days for expire time of transfer and
+ guest renders the following config.php options invalid:
+ default_transfer_days_valid, max_transfer_days_valid,
+ default_guest_days_valid min_guest_days_valid,
+ max_guest_days_valid.
+
+ (G2)
+ A transfer can no longer have it's expire time extended using the
+ config.php options allow_transfer_expiry_date_extension and
+ allow_transfer_expiry_date_extension_admin. This was explicitly
+ requested functionality by at least one NREN in the 2.x
+ development cycle.
+
+ (G3)
+ Inconsistant:
+   In upload page options are selected with sliders
+   The same options are shown as checkboxes on the transfer details page
+
+ (G4)
+ Account settings and Statistics headers are not centered. The
+ latter is a different font.
+
+ Upload page
+ 
+   * (u1) Selecting two files to upload I saw 2/1530 files uploading in
+     progress.
+
+   * (u2) Encryption option seems a little hidden. Using a generated
+     password seems to be reduced in presentation. No ability to
+     input a password without it being seen.
+
+   * (u3) What does "Include me as a recipient" mean when you want a
+     transfer link
+
+   * (u4) There is no semantic break between the Encryption and "Expires
+     after 7 days" option This might conflate the password expires
+     vs the entire transfer expires.
+
+   * (u5) Transfer completed the % sign is very close to the progress
+     bar.
+
+   * (u6) Transfer completed, maybe confusing to users to see "Total
+     size 7.8 MB/46.6 GB" We know the 46gb is a quota but users
+     have to figure that out. Spacing is also very condensed in the
+     actual numeric data.
+
+   * (u7) Adding files with bad names does not show failure
+
+   * (u8) Adding 300 files takes a while and a while to start. May be unrelated
+     to this PR.
+
+   * (u9) Maybe the "A transfer link" should be active by default as it
+     appears to be the default.
+
+   * (u10) get a link is shown in transfer options though it is used
+     above too. Potential confusion.
+
+   * (u11) Selecting "A transfer link" and all the options the resulting tuple in the transfers table
+     has options with only {"get_a_link":true,"email_recipient_when_transfer_expires":false,
+     "hide_sender_email":true,"encryption":true}
+     
+     A similar upload in the older code (2.x series) contains (3 bootstrap has similar)
+     
+     {"get_a_link":true,"email_recipient_when_transfer_expires":false,"hide_sender_email":true,
+     "email_me_on_expire":true,"email_upload_complete":true,"email_download_complete":true,
+     "email_daily_statistics":true,"email_report_on_closing":true,
+     "must_be_logged_in_to_download":true,"web_notification_when_upload_is_complete":true,"encryption":true}
+
+   * (u12) Number of files shown as: 1000/1530
+
+   * (u13) Selecting a transfer link first then typing a password then
+     going to the message you can include the same password as part
+     of the message. This violates
+     upload_page_password_can_not_be_part_of_message_handling.
+
+   * (u14) Doing the above and then selecting "An email" you can not
+     complete the form but the
+     upload_page_password_can_not_be_part_of_message is not shown
+     to the user to indicate why.
+
+   * (u15) Selecting "An email" first and then typing a password "abc"
+     and going to the message and entering "abc" the encryption
+     password box is active and the
+     password_can_not_be_part_of_message_error is shown.
+
+   * (u16) The config.php options transfer_options/*/advanced do nothing now.
+
+ Account settings page
+
+   * (s1) Use transfer settings from previous upload does not save
+   
+   * (s2) Save email recipients slider does not save
+
+   * (s3) seems incorrect: Current quota storage: 0
+
+   * (s4) Clear recipients emails button badly formed
+
+   * (s5) Clear transfer settings button becomes badly formed when you enlarge font
+
+   * (s6) Delete my account untested as yet. Assumed to work. Should be
+     tested prior to 3.0 release.
+
+   * (s7) "Download Python CLI Client" and "Download Python CLI Client
+     configuration" do nothing I think this has rotted in the
+     translation strings.
+
+   * (s8) When you clear your API secret "Warning: Undefined variable
+     $tt in /scuff18/opt/filesender/templates/user_page.php on line
+     340" Works in development3 version.
+
+ My invitations page
+
+   * (inv1) Can only send to me is not shown as an option
+
+   * (inv2) "Get a link instead of sending to recipients" does not disable
+     options like "Include me as a recipient" and "Allow recipients
+     to receive download complete emails"
+
+   * (inv3) The Invitation details page again shows checkboxes for the options not sliders
+
+   * (inv selecting all the options results in a guests tuple with
+     options = {"email_guest_created":true,"email_guest_created_receipt":true,"email_guest_expired":true}
+       and 
+     transfer_options = {"get_a_link":false}
+
+     Should be for example:
+      {"email_upload_started":true,"email_upload_page_access":true,
+       "valid_only_one_time":false,"does_not_expire":true,"can_only_send_to_me":true,
+       "email_guest_created":true,"email_guest_created_receipt":true,
+       "email_guest_expired":true}
+           and
+      {"email_me_copies":true,"email_me_on_expire":true,"email_upload_complete":true,
+       "email_download_complete":true,"email_daily_statistics":true,
+       "email_report_on_closing":true,"enable_recipient_email_download_complete":true,
+       "add_me_to_recipients":true,"get_a_link":false,"must_be_logged_in_to_download":true,
+       "web_notification_when_upload_is_complete":true,"hide_sender_email":true}
+
+ Invitation details page
+
+   * (invd1) Invitation information wraps early and breaks lines to leave a lot of space in the middle
+     of the screen
+
+   * (invd2) Resend invitation button brings up "Forward guest voucher" dialog.
+     If you put in another address there then it is not recorded as a Recipient.
+
+ Statistics page
+ 
+   * (stat1) Aggregate stats page link is broken. It is in bootstrap version too.
+
+ Download page
+
+   * (d1) email address has to be fairly short not to wrap. Perhaps domain.university.edu.xx would wrap mostly?
+
+   * (d2) av results do not display
+
+   * (d3) single file download information runs together "869.6 MBDownloading: 45.08 %"
+
+Guest upload
+
+   * (gu1) When the upload is to complete with an email the final page still shows
+     "Here's your download link" which is empty.
+        
+
+    
+
+Code review
+------------
+
+
+* (code1) Double check for English creeping in on all text and attributes. I
+  didn't find many but there are some around. For example, the
+  degredation of title="{tr:forward} on the guests_table page.
+
+GUI.class.php
+  * (code2) Maybe able to select other theme than RNP in the future.
+  * Is this theme "RNP" or is it generic white?
+
+ConfigDefaults.php
+  * (code3) Default settings should be preserved unless that board approves them.
+    Exceptions: options relating to transfer settings might be moved to advanced 
+                adding terms to allow_pages_core seems ok
+                adding new transfer detail and other pages to add_for_user
+
+(code4) language/* changes ignored as they will be overriden with poeditor import.
+
+templates/download_page.php
+
+  * (code5) move 3 lines in declaration of $days_to_expire into a new method of transfer.
+
+  * (code6) {tr:transfer_expires_in} <?php echo $days_to_expire ?> {tr:days} can be better handled
+    using placemarkers.
+    eg passing
+        return array(
+            'total' => $quota,
+            'used' => $used,
+            'available' => $quota ? max(0, $quota - $used) : null
+        );
+    to    
+    echo Lang::tr('quota_usage')->r($usage)
+--> Assume this for all mixed mode translations.
+
+  * (code7) crypto_not_supported_message is changed name and leaves a dangling reference in ./www/js/download_page.js
+
+  * (code8) av results do not show properly on download page.
+    foreach($sortedFiles->files as $file)
+
+  * (code9) Per file progress runs together "7.8 MBDownload complete"
+
+templates/footer.php
+  * (code10) always discloses version regardless of Disclosed::isDisclosed
+  * (code11) Version string is also hard coded.
+  --> secutiy issue!
+
+templates/guests_page.php
+
+  * (code12) Table is not made from Guest::fromUserAvailable()
+    A guest might have a status of closed with expires > now()
+
+templates/guests_table.php
+
+  * (code13) The above comment in guests_page.php about fromUserAvailable flows on to
+    redundant client side filtering with $filter_callback and $filtered.
+    This interacts badly with templates/admin_guests_section.php which explicitly
+    wants all guests unfiltered.
+    
+  * (code14) class="subject" and message should be removed (currently commented)
+  
+  * (code15) if there are downloads for a guest then the table is broken trying to read
+    Attempt to read property "downloads" on array
+
+  * (code16) if a guest is closed then they are not shown in the table which makes the
+    guest->status == 'available' test seem a little strange. This is because the table
+    explicitly steps through only the "filtered" guests. Either allow closed guests
+    to be shown or explicitly filter at the database level with fromUserAvailable from guests.
+
+  * (code17) The title attribute of remind and forward is raw english text. Use tr:forward et al
+    instead. This triggered a broad general comment instead of explicitly noting each
+    occurance.
+
+templates/invitation_detail_page.php
+
+  * (code18) This page is only called from www/js/guests_table.js with a guest id. This can be
+    found directly in the database using Guest::fromId(). No need for filter_callback
+    or doing Guest::fromUserAvailable() to get a collection
+
+  * (code19) if the guest id is not found then a malformed page is shown
+
+  * (code20) Ignores Config::get('user_can_only_view_guest_transfers_shared_with_them');
+    Which is highly important to SURF
+
+  * (code21) Attempting to show a guest that is closed results in a badly formed page
+
+templates/menu.php
+  * ok
+templates/new_invitation_page.php (new)
+  * ok2
+templates/page.php
+  * ok
+templates/pagemenuitem.php
+  * ok
+templates/privacy_page.php
+  * ok
+templates/terms_page.php
+  * ok
+templates/transfer_detail_page.php (new)
+  * ok                                   
+templates/transfers_page.php
+  * ok
+
+www/css/default.css
+www/css/new-ui/_general.css
+www/css/new-ui/components/_badge.css
+www/css/new-ui/components/_buttons.css
+www/css/new-ui/components/_collapse.css
+www/css/new-ui/components/_copy.css
+www/css/new-ui/components/_footer.css
+www/css/new-ui/components/_form.css
+www/css/new-ui/components/_header.css
+www/css/new-ui/components/_info.css
+www/css/new-ui/components/_input.css
+www/css/new-ui/components/_link.css
+www/css/new-ui/components/_list.css
+www/css/new-ui/components/_paginator.css
+www/css/new-ui/components/_progress-bar.css
+www/css/new-ui/components/_radio.css
+www/css/new-ui/components/_select.css
+www/css/new-ui/components/_switch.css
+www/css/new-ui/components/_table.css
+www/css/new-ui/components/_text.css
+www/css/new-ui/components/components.css
+www/css/new-ui/pages/_base-page.css
+www/css/new-ui/pages/_download.css
+www/css/new-ui/pages/_invitation-detail.css
+www/css/new-ui/pages/_invitations.css
+www/css/new-ui/pages/_my-transfers.css
+www/css/new-ui/pages/_new-invitation.css
+www/css/new-ui/pages/_settings.css
+www/css/new-ui/pages/_transfer-detail.css
+www/css/new-ui/pages/_transfer.css
+www/css/new-ui/pages/pages.css
+www/css/new-ui/styles.css
+www/css/new-ui/utilities/utilities.css
+www/css/new-ui/variables/_colors.css
+www/css/new-ui/variables/_spacing.css
+www/css/new-ui/variables/variables.css
+www/css/themes/dark.css
+www/css/themes/rnp.css
+www/images/filesender-icon.png
+www/images/filesender-initiative.jpg
+
+www/index.php
+* ok
+www/js/guests_table.js
+* ok
+www/js/transfers_table.js
+* (code22) Has a number of TODO lines (REMOVER / FIM TODO)
+www/js/ui.js
+* ok
+www/js/user_page.js
+* ok
+www/js/invitation_detail_page.js
+* ok
+www/js/new_invitation_page.js
+* ok
+www/js/transfer_detail_page.js
+* ok
+templates/transfers_table.php
+* ok
+www/js/download_page.js
+* (code23) Strange log entries like console.log('SELECT LINHA');
+* ok
+templates/user_page.php
+* NO ACTION: The line if($mode == 'write') is always true when user_page wants an item to be shown.
+  The old code was not very clear, working in 3 parts to get a result.
+  This gives the same result as the old code so isn't an issue. user_page should be extended
+  in the future.
+  
+* (code24) The following items don't seem to do any thing
+  Use transfer settings from previous upload as default settings for next transfer.
+  Save email recipients from past use (used to automatically complete email fields).
+  
+* (code25) When directly accessing properties you should just do so
+     $id = 'email_addresses';
+     $value = Auth::user()->$id;
+  TO
+     $value = Auth::user()->email_addresses;
+   This could be directly used in the single print out rather than bounced through $value.
+   
+* (code26) Download python client and config have no links.
+
+
+
+templates/upload_page.php
+
+* (code27) $files_actions_div_extra_class is no longer used and can be deleted.
+
+* (code28) Use of LegacyUploadProgress has been removed.
+
+* (code29) fs-transfer__upload-speed-info is not shown
+* (code30) fs-transfer__upload-custom-name ? 
+
+
+www/js/upload_page.js
+
+* (code31) When $show_get_a_link_or_email_choice = false; then the page only shows
+  email at top as expected but "get a link" is still shown in the transfer
+  options and can be set to true or false.
+  
+* (code32) When $show_get_a_link_or_email_choice = false the default is not to select
+  "an email" which is the only option and so the "to" is not shown.
+  If you just click next and send it you get a link which should be explicitly
+  prohibited. For example, a guest who should not be able to do that and only
+  "send to me".
+  
+* (code33) upload: functionality reduction, can not select the language for the transfer
+
+* (code34) upload: when you leave an active large upload to stop it (only way to do that)
+  and then return FileSender offers to resume the old transfer. Click yes.
+  No hints as to what files you need to add again to resume the transfer.
+  If you add a file then it may be rejected and finally a hint is shown as to
+  what you need to add again to resume the transfer.
+  
+* (code35) changing "I accept the terms and conditions of this service" scrolls the page
+  to somewhere that seems random. Since you are near the next button before
+  and get scrolled up it seem like you are being redirected to a missing or
+  invalid option?
+  
+* (code36) Selecting a 30 days expire on upload fails to start with  
+scheduleAutomaticResume(calling retry) Invalid expiration date. Retry attempt 0
+ui.js:51 [08:44:52] Data sending failed, retrying from last known offsets
+transfer.js:1365 Uncaught TypeError: Cannot read properties of null (reading 'abort')
+    at window.filesender.transfer.retry (transfer.js:1365:27)
+    at resume (upload_page.js:177:32)
+    at upload_page.js:1107:17
+* (code37) Using a generated password is not correctly handled. Should avoid pbkdf2
+  when generated and be recorded in the database as such.
+  Must set and respect password_version and password_encoding.
+  
+* (code38) The ability to hide options with config seems to work but can not be tested without options
+  being saved to database. For example setting available=false in
+  https://github.com/filesender/filesender/blob/development/docs/v2.0/admin/configuration/index.md#transfer_options
+
+Object creation
+---------------
+
+(create1) 
+*** New transfer creation test for new upload:
+* Single file, get a link, subject, message, 15 days expire, all options ticked.
+  ui2023 fails to preserve transfer.options.
+
+```
+  id  | userid |            user_email            | guest_id | lang  |   subject    |   message    |       created       |   made_available    |       expires       |  expiry_extensions |  status   |
+  options |
+  key_version | salt | password_version | password_encoding | password_hash_iterations | client_entropy | roundtriptoken | guest_transfer_shown_to_user_who_invited_guest 
+------+--------+----------------------------------+----------+-------+--------------+--------------+---------------------+---------------------+---------------------+-------------------+-----------+--------------------------
+-------------------------------------------------------------------------------------+-------------+----------------------------------+------------------+-------------------+--------------------------+-----------------------
+-----------------------+----------------------------------+------------------------------------------------
+ui2023
+2739 |     21 | testdriver@localhost.localdomain |          | en-au | subject here | message here | 2023-09-19 23:47:42 | 2023-09-19 23:47:44 | 2023-10-04 15:00:00  | 0 | available |
+  {"get_a_link":true,"email_recipient_when_transfer_expires":false,"hide_sender_email":true,"encryption":true}  |
+            3 | CMok |                1 |                 0 |                  4000000 | oQok | 45ok           | t
+```
+
+upstream/development3
+```
+ 2741 |     21 | testdriver@localhost.localdomain |          | nl    |              |              | 2023-09-19 23:56:36 | 2023-09-19 23:56:38 | 2023-10-03 15:00:00 | 0 | available |
+  {"get_a_link":true,"email_recipient_when_transfer_expires":false,"hide_sender_email":true,"email_me_on_expire":true,"email_upload_complete":true,"email_download_complete":true,"email_report_on_closing":true,"must_be_logged_in_to_download":true,"web_notification_when_upload_is_complete":true,"encryption":true} |
+            3 | 9+xx |                1 |                 0 |                  4000000 | JTok | a2ok | t
+```
+
+Files table seems ok between two versions.
+
+When creating an upload with a generated password these are not set in transfers in ui2023.
+password_version | password_encoding | password_hash_iterations 
+
+
+(create2) 
+*** New guest creation test:
+* Single guest, email, subject, message, expires in 15 days, all options ticked
+
+NOTE: The guests options and transfer_options are not set in ui2023.
+NOTE: last_activity and last_reminder are set to zero epoch + 1 hour.
+```
+ id  | userid |            user_email            |                token                 |            email             | transfer_count |   subject    |   message    |
+ options |
+ transfer_options   |  status   |       created       |       expires       |    last_activity    | reminder_count |    last_reminder    | expiry_extensions | service_aup_accepted_version | service_aup_accepted_time 
+-----+--------+----------------------------------+--------------------------------------+------------------------------+----------------+--------------+--------------+---------------------------------------------------------
+-----------------------------------+----------------------+-----------+---------------------+---------------------+---------------------+----------------+---------------------+-------------------+----------------------------
+--+---------------------------
+ui2023
+ 235 |     21 | testdriver@localhost.localdomain | 85xx | tester@localhost.localdomain |              0 | subject here | message here |
+ {"email_guest_created":true,"email_guest_created_receipt":true,"email_guest_expired":true} |
+ {"get_a_link":false} | available | 2023-09-20 00:03:54 | 2023-10-04 15:00:00 | 1970-01-01 01:00:00 | 0 | 1970-01-01 01:00:00 | 0 | 0 | 
+```
+
+upstream/development3
+```
+ 236 |     21 | testdriver@localhost.localdomain | 55xx | tester@localhost.localdomain |              0 | subject here | message here |
+ {"email_upload_started":true,"email_upload_page_access":true,"valid_only_one_time":true,"does_not_expire":true,"can_only_send_to_me":false,"email_guest_created":true,"email_guest_created_receipt":true,"email_guest_expired":true} |
+ {"email_me_copies":true,"email_me_on_expire":true,"email_upload_complete":true,"email_download_complete":true,"email_daily_statistics":true,"email_report_on_closing":true,"enable_recipient_email_download_complete":true,"add_me_to_recipients":true,"get_a_link":true,"must_be_logged_in_to_download":true,"web_notification_when_upload_is_complete":true,"hide_sender_email":true} | available | 2023-09-20 00:06:14 |  | 1970-01-01 01:00:00 | 0 | 1970-01-01 01:00:00 |  0 | 0 | 
+``` 
