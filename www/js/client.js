@@ -541,7 +541,11 @@ window.filesender.client = {
      * @param callable error
      */
     putChunk: function(file, blob, offset, progress, done, error, encrypted, encryption_details ) {
-        console.log("putchunk()");
+        var sz = blob.size;
+        if( typeof blob == "string" ) {
+            sz = blob.length;
+        }
+        console.log("BBBBBBBBBBBB putchunk() size ", sz );
         var opts = {
             contentType: 'application/octet-stream',
             'accept-encoding': 'identity',
@@ -549,7 +553,7 @@ window.filesender.client = {
             headers: {
                 'X-Filesender-File-Size': file.size,
                 'X-Filesender-Chunk-Offset': offset,
-                'X-Filesender-Chunk-Size': blob.size,
+                'X-Filesender-Chunk-Size': sz,
                 'X-Filesender-Encrypted': '1',
    	        'csrfptoken': filesender.client.getCSRFToken()
             },

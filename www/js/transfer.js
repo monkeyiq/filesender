@@ -1398,7 +1398,8 @@ window.filesender.transfer = function() {
         filesender.ui.log('Uploading chunk [' + offset + ' .. ' + end + '] from file ' + file.name);
         
         var slicer = file.blob.slice ? 'slice' : (file.blob.mozSlice ? 'mozSlice' : (file.blob.webkitSlice ? 'webkitSlice' : 'slice'));
-        
+
+        console.log("ZZZZZZZZZZZZZZ blob", file.blob );
         var blob = file.blob[slicer](offset, end);
         var file_uploaded_when_chunk_complete = end;
         if (file_uploaded_when_chunk_complete > file.size)

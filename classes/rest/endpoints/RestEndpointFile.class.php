@@ -489,8 +489,7 @@ class RestEndpointFile extends RestEndpoint
                 }
             }
             
-            // Check that the sent data size is the one givent by the client
-/*            
+            // Check that the sent data size is the one givent by the client            
             if (!is_null($client['X-Filesender-Chunk-Size'])) {
                 if ($data_length != $client['X-Filesender-Chunk-Size']) {
                     throw new RestSanityCheckFailedException(
@@ -502,7 +501,7 @@ class RestEndpointFile extends RestEndpoint
                     );
                 }
             }
- */
+
             
             // Check that data length does not exceed upload_chunk_size (can be smaller at the end of the file)
             $upload_chunk_size = Config::get('upload_chunk_size');
