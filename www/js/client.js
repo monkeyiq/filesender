@@ -37,6 +37,29 @@
 if(!('filesender' in window)) window.filesender = {};
 
 
+function blobToUint8Array(b) {
+    var uri = URL.createObjectURL(b),
+        xhr = new XMLHttpRequest(),
+        i,
+        ui8;
+    
+    xhr.open('GET', uri, false);
+    xhr.send();
+    
+    URL.revokeObjectURL(uri);
+    
+    ui8 = new Uint8Array(xhr.response.length);
+    
+    for (i = 0; i < xhr.response.length; ++i) {
+        ui8[i] = xhr.response.charCodeAt(i);
+    }
+    
+    return ui8;
+}
+
+
+
+
 /**
  * AJAX webservice client
  */
@@ -87,7 +110,11 @@ window.filesender.client = {
     },
     
     // Send a request to the webservice
-    call: function(method, resource, data, callback, options) {
+    call: async function(method, resource, data, callback, options) {
+
+        console.log("call resource ", resource );
+        console.log("call data ", data );
+        
         if(!this.base_path) {
             var path = window.location.href;
             path = path.split('/');
@@ -106,13 +133,101 @@ window.filesender.client = {
         var urlargs = [];
         for(var k in args) urlargs.push(k + '=' + args[k]);
         
-        if(urlargs.length) resource += (resource.match(/\?/) ? '&' : '?') + urlargs.join('&');
         
-        if(data) {
-            var raw = options && ('rawdata' in options) && options.rawdata;
-            
-            if(!raw) data = JSON.stringify(data);
-        }else data = undefined;
+//        if(data) {
+//            var raw = options && ('rawdata' in options) && options.rawdata;
+//            
+//            if(!raw) data = JSON.stringify(data);
+//        }else data = undefined;
+        console.log("AAAAAAAAAA 1");
+// API Key based authentication (i.e. CLI)
+        if (this.api_key) {
+            console.log("api key !!! ... 1 " );
+            //... if there is an API key then REST CLI
+            var timestamp = Math.floor(Date.now() / 1000);
+
+            urlargs.push('remote_user' + '=' + this.from);
+            urlargs.push('timestamp' + '=' + timestamp);
+
+            var local_resource = resource.split(/\?|\&/);
+            resource = local_resource.shift();
+
+            local_resource.forEach(v => urlargs.push(v));
+
+            urlargs.sort();
+            var to_sign = method.toLowerCase()
+                        +'&'
+                        +this.base_path.replace('https://','',1).replace('http://','',1)
+                        +resource
+                        +'?'
+                        +urlargs.join('&');
+
+            if(data) {
+            console.log("api key !!! ... 2 " );
+                var raw = options && ('rawdata' in options) && options.rawdata;
+
+                if(!raw) {
+            console.log("api key !!! ... !raw  " );
+                    //clean up the data
+                    data.aup_checked = 1;
+
+                    //Delete all `null` & `undefined` values (== operator vs ===)
+                    Object.keys(data).forEach((key) => data[key] == null && delete data[key]);
+                    data = JSON.stringify(data);
+                    to_sign += '&' + data;
+                    console.log(data);
+                } else {
+            console.log("api key !!! ... handle data " );
+                    // Await the return value - because outer function is now ASYNC
+                    console.log("dataAAAAAAA1 " , data );
+                    //                    let value = '';
+
+                    value = '';
+                    
+                    if( typeof data == 'object' ) {
+                        console.log(data.constructor.name);
+                        if(data.constructor.name == 'Blob') {
+                            value = await data.text();
+                            data = value;
+                        }
+                    } else {
+                        value = data.buffer;
+                    }
+                    
+////                    let value = await data.text();
+////                    data = value;
+                    //                    let value = data.text();
+//                    let value = blobToUint8Array(data);
+                    //                    let value = data.buffer;
+                    //                    let value = JSON.stringify(data);
+                    
+                    console.log("dataAAAAAAA2 " , value );
+                    to_sign += '&'+value;
+                }
+            }else data = undefined;
+
+            console.log("AAAA Signing for API ", to_sign );
+            console.log("AAAA algo sha1 " );
+            console.log("AAAA secret  ", this.api_key );
+            //hmac of to_sign content
+            const crypto = require('crypto');
+            //TODO: get the ALGORITHM from config/REST rather than default to "sha1"
+            let signature = crypto.createHmac("sha1", this.api_key).update(to_sign).digest().toString('hex');
+
+            // add the signature to the URL args
+            urlargs.push('signature' + '=' + signature);
+
+        } else {
+
+            if(data) {
+                var raw = options && ('rawdata' in options) && options.rawdata;
+
+                if(!raw) data = JSON.stringify(data);
+            }else data = undefined;
+        }        
+        console.log("AAAAAAAAAA 2");
+
+        if(urlargs.length) resource += (resource.match(/\?/) ? '&' : '?') + urlargs.join('&');
         
         var errorhandler = function(error) {
             filesender.ui.error(error);
@@ -135,26 +250,34 @@ window.filesender.client = {
         var settings = {
             cache: false,
             contentType: 'application/json;charset=utf-8',
+            'accept-encoding': 'identity',
             context: window,
             data: data,
             processData: false,
             dataType: 'json',
             beforeSend: function(xhr) {
                 for(var k in headers) xhr.setRequestHeader(k, headers[k]);
+                xhr.withCredentials = false;
+                console.log("beforeSend!!!!!!!!!!!!");
             },
             success: function(data, status, xhr) {
+                console.log("AAAAAAAAAA success");
                 filesender.client.updateSecurityToken(xhr); // Update security token if it was changed (do this before callback since callback may trigger another request)
                 callback.apply(null, arguments);
             },
             complete: function(xhr) {
+                console.log("AAAAAAAAAA complete");
                 filesender.client.updateSecurityToken(xhr); // Update security token if it was changed
             },
             type: method.toUpperCase(),
-            url: this.base_path + resource
+            url: this.base_path + resource,
+            strictSSL: false            
         };
         
         // Needs to be done after "var settings" because handler needs that settings variable exists
         settings.error = function(xhr, status, error) {
+//            console.log(xhr);
+            xhr.responseText = xhr.statusText;
             var msg = xhr.responseText.replace(/^\s+/, '').replace(/\s+$/, '');
             
             if( // Ignore 40x, 50x and timeouts if undergoing maintenance
@@ -275,8 +398,19 @@ window.filesender.client = {
             this.pending_requests.push(settings);
             return;
         }
+
         
-        return jQuery.ajax(settings);
+//        console.log("AJAX ", settings );
+        //        console.log("AJAX2 ", settings.context._resourceLoader._strictSSL );
+        if( settings.context._resourceLoader ) {
+            settings.context._resourceLoader._strictSSL = false;
+        }
+        var ret = jQuery.ajax(settings);
+
+//        console.log(ret);
+//        ret._resourceLoader._strictSSL = false;
+
+        return ret;
     },
     
     get: function(resource, callback, options) {
@@ -407,8 +541,10 @@ window.filesender.client = {
      * @param callable error
      */
     putChunk: function(file, blob, offset, progress, done, error, encrypted, encryption_details ) {
+        console.log("putchunk()");
         var opts = {
             contentType: 'application/octet-stream',
+            'accept-encoding': 'identity',
             rawdata: true,
             headers: {
                 'X-Filesender-File-Size': file.size,
@@ -432,6 +568,24 @@ window.filesender.client = {
         var chunkid = Math.floor(offset / window.filesender.config.upload_chunk_size);
         var $this = this;
         if(encrypted){
+
+            // FIXME: need to merge this with below block.
+            if( true ) {
+                window.filesender.crypto_app().encryptBlob(
+                    blob,
+                    chunkid,
+                    encryption_details,
+                    function(encrypted_blob) {
+                        var result = $this.put(
+                            file.transfer.authenticatedEndpoint(
+                                '/file/' + file.id + '/chunk/' + offset,
+                                file), encrypted_blob, done, opts);
+                    }
+                );
+            }
+            else
+            {
+            
             var cryptedBlob = null;
             blobReader = window.filesender.crypto_blob_reader().createReader(blob, function(blob){
                 // nothing todo here.. 
@@ -451,6 +605,7 @@ window.filesender.client = {
                     }
                 );
             });
+            }
         }else{
             var result = $this.put(file.transfer.authenticatedEndpoint('/file/' + file.id + '/chunk/' + offset, file), blob, done, opts);
         }

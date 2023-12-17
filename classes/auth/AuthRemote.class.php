@@ -119,17 +119,26 @@ class AuthRemote
             
             // Build signed data
             $signed = $method.'&'.$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME'].(array_key_exists('PATH_INFO', $_SERVER) ? $_SERVER['PATH_INFO'] : '');
+            Logger::error("AAAA signed1 $signed ");
             
             $args = $_GET;
             unset($args['signature']);
             if (count($args)) {
                 $signed .= '?'.implode('&', RestUtilities::flatten($args));
             }
+            Logger::error("AAAA signed2 $signed ");
+
+            if( preg_match( '|/chunk/|', $signed )) {
+                    $signed .= '&';
+            } else {
             
-            $input = Request::body();
-            if ($input) {
-                $signed .= '&'.$input;
+                $input = Request::body();
+                if ($input) {
+                    $signed .= '&'.$input;
+                    Logger::error("AAAA S3 $input ");
+                }
             }
+            Logger::error("AAAA S3 signed3 $signed ");
             
             // Check signature
             if ($application) {
@@ -154,8 +163,19 @@ class AuthRemote
             if (!$algorithm) {
                 $algorithm = 'sha1';
             }
+            Logger::error("AAAA signed $signed ");
+            Logger::error("AAAA algo $algorithm");
+            Logger::error("AAAA secret $secret ");
             $signature = hash_hmac($algorithm, $signed, $secret);
             if ($received_signature !== $signature) {
+                Logger::error("AAAA sigs are different!    EEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRROOOOOOOORRRRRRRRRRRRR");
+                Logger::error("AAAA received_signature $received_signature ");
+                Logger::error("AAAA signature $signature ");
+                
+            }
+            // XXXXXXXXXXXXXXX FIXME
+            if ($received_signature !== $signature) {
+                Logger::error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                 throw new AuthRemoteSignatureCheckFailedException($signed, $secret, $received_signature, $signature);
             }
             
