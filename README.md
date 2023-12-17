@@ -24,19 +24,9 @@ https://github.com/br00k/filesender/commit/5330c2b361a9e8ac3749181bac1cab37707be
 The following is a non exhaustive list of updates that are needed
 before a pull request is attempted:
 
-* The API call HMAC code is explicitly disabled in the PoC. Thus the
-  PoC does not offer any protection for API calls to upload (or
-  perform any other action) and is not suitable for anything other
-  than PoC usage.
+* have to test multiple chunk sample files
 
-  It is possible in the future that the data that forms the signature
-  string handed to the HMAC code might not include the actual data
-  sent to the File chunk put chunk, filesender.client.putChunk(), to
-  allow the client to not have to read the entire blob to be sent at
-  that time. See AuthRemote.class.php "XXXXXXXXXXXXXXX FIXME".
-
-* The sent Chunk size and data size check is disabled in
-  RestEndpointFile.class.php.
+* add command line arguments to select which files to upload
 
 * TeraSender upload has not been tested. This would be the preferred
   upload method for best performance.
