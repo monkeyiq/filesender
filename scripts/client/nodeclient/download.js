@@ -23,11 +23,19 @@ if( !argv.password ) {
     return;
 }
 var password = argv.password;
+console.log("AAAAA password ", password );
+
+global.alert = function(msg) { console.log(msg); }
+if( !filesender.terasender ) {
+    filesender.terasender = {};
+}
+filesender.terasender.stop = function() { console.log("EEEEE terasender.stop");}
+
 
 argv._.forEach((transferLink) => {
     console.log("Downloading from transfer ", transferLink);
 
-    var token = '6e5c6201-ff6e-4120-9779-effca4f2b6ad';
+    var token = '069373a6-b237-44f0-bec4-4f19b7cf04da';
     var options = { args: {'token': token}};
 //    var options = {};
     window.filesender.client.get('/transfer/fileidsextended',
@@ -40,25 +48,97 @@ argv._.forEach((transferLink) => {
                                          var crypto_app = window.filesender.crypto_app();
 
                                          window.filesender.ui.prompt = function() { return password; }
-                                         var progress = function() { };
+                                         // var progress = function() { };
+                                         var progress = null;
                                          window.filesender.crypto_encrypted_archive_download = false;
 
 
                                          // FIXME: move to decryptDownloadToBlobSink() to avoid UI code.                                         
 
+                                         var filesize = dl.size;
+                                         var mime = dl.mime;
+                                         var name = "output.txt";
+
+                                         fs.writeFileSync(name, Buffer.from(''),
+                                         {
+                                             encoding: "utf8",
+                                             flag: "w",
+                                             mode: 0o660
+                                         });                                                 
+                                                   
+                                         var blobSinkLegacy = {
+                                             blobArray: [],
+                                             // keep a tally of bytes processed to make sure we get everything.
+                                             bytesProcessed: 0,
+                                             expected_size: filesize,
+//                                             callbackError: callbackError,
+                                             name: function() { return "legacy"; },
+                                             error: function(error) {
+                                             },
+                                             visit: function(chunkid,decryptedData) {
+                                                 window.filesender.log("SINK blobSinkLegacy visiting chunkid " + chunkid + "  data.len " + decryptedData.length );
+                                                 console.log("decryptedData " , decryptedData);
+                                                 this.blobArray.push(decryptedData);
+                                                 this.bytesProcessed += decryptedData.length;
+                                                 var buffer = Buffer.from(decryptedData);
+                                                 console.log("buffer " , buffer);
+                                                 fs.writeFileSync(name, buffer,
+                                                                  {
+                                                                      encoding: "utf8",
+                                                                      flag: "a+",
+                                                                      mode: 0o660
+                                                                  });                                                 
+                                                 
+                                             },
+                                             done: function() {
+                                                 window.filesender.log("SINK blobSinkLegacy.done()");
+                                                 window.filesender.log("SINK blobSinkLegacy.done()      expected size " + filesize );
+                                                 window.filesender.log("SINK blobSinkLegacy.done() decryped data size " + this.bytesProcessed );
+                                                 window.filesender.log("SINK blobSinkLegacy.done()     blobarray size " + this.blobArray.length );
+
+                                                 if( this.expected_size != this.bytesProcessed ) {
+                                                     window.filesender.log("blobSinkLegacy.done() size mismatch");
+//                                                     this.callbackError('decrypted data size and expected data size do not match');
+                                                     return;
+                                                 }
+                                             }
+                                         };
                                          
-                                         crypto_app.decryptDownload( config.base_path
-                                                                     + 'download.php?token=' + token
-                                                                     + '&files_ids=' + dl.id,
-                                                                     transfer.id,
-                                                                     dl.mime, dl.filename, dl.filesize, dl.encrypted_filesize,
-                                                                     dl.key_version, dl.salt,
-                                                                     dl.password_version, dl.password_encoding,
-                                                                     dl.password_hash_iterations,
-                                                                     dl.client_entropy,
-                                                                     window.filesender.crypto_app().decodeCryptoFileIV(dl.fileiv,dl.key_version),
-                                                                     dl.fileaead,
-                                                                     progress );
+                                         var blobSink = blobSinkLegacy;
+                                         var blobSinkStreamed = blobSinkLegacy;
+                                         var link = config.site_url
+                                             + 'download.php?token=' + token
+                                             + '&files_ids=' + dl.id;
+
+                                         console.log("config ", config );
+                                         console.log("download link ", link );
+                                         console.log("pass ", password );
+                                         console.log("tid  ", dl.transferid );
+                                         console.log("mime ", dl.mime );
+                                         console.log("fname ", dl.name );
+                                         console.log("size  ", dl.size );
+                                         console.log("esize ", dl.encrypted_size );
+                                         console.log("kver ", dl.key_version );
+                                         console.log("salt ", dl.key_salt );
+                                         console.log("pver ", dl.password_version );
+                                         console.log("penc ", dl.password_encoding );
+                                         console.log("hasiters ", dl.password_hash_iterations );
+                                         console.log("cliente  ", dl.client_entropy );
+                                         console.log("aead     ", dl.fileaead );
+                                         
+                                         crypto_app.decryptDownloadToBlobSink( blobSink, password,
+                                                                               dl.transferid, link,
+                                                                               dl.mime, dl.name, dl.size, dl.encrypted_size,
+                                                                               dl.key_version, dl.key_salt,
+                                                                               dl.password_version, dl.password_encoding,
+                                                                               dl.password_hash_iterations,
+                                                                               dl.client_entropy,
+                                                                               window.filesender.crypto_app().decodeCryptoFileIV(dl.fileiv,dl.key_version),
+                                                                               dl.fileaead,
+                                                                               progress );
+
+
+                                         
                                          
                                      });
                                  },

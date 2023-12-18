@@ -206,7 +206,7 @@ window.filesender.client = {
                 }
             }else data = undefined;
 
-            if( !to_sign.endsWith("&")) {
+            if( options.force_amp_at_end && !to_sign.endsWith("&")) {
                 to_sign += "&";
             }
             console.log("AAAA Signing for API ", to_sign );
@@ -418,6 +418,7 @@ window.filesender.client = {
     },
     
     get: function(resource, callback, options) {
+        options.force_amp_at_end = true;
         return this.call('get', resource, undefined, callback, options);
     },
     

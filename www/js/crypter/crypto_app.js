@@ -1142,7 +1142,7 @@ window.filesender.crypto_app = function () {
                 
                 if( error && error.message && error.message != "" ) {
                     msg = error.message;
-                } 
+                }
                 alert( msg );
                 if (progress){
                     progress.html( msg );
