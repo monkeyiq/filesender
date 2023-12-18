@@ -1242,9 +1242,13 @@ window.filesender.transfer = function() {
                 if (!transfer.files[i].id)
                     return errorhandler({message: 'file_not_in_response', details: {file: transfer.files[i]}});
             }
-            
-            if('get_a_link' in transfer.options && transfer.options.get_a_link)
+
+            console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2222 ", data.recipients[0].download_url );
+            console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2222 ", transfer.options );
+            if('get_a_link' in transfer.options && transfer.options.get_a_link) {
                 transfer.download_link = data.recipients[0].download_url;
+                console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2222 ", transfer.download_link );
+            }
             
             transfer.createRestartTracker();
             
