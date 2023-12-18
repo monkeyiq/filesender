@@ -35,7 +35,15 @@ filesender.terasender.stop = function() { console.log("EEEEE terasender.stop");}
 argv._.forEach((transferLink) => {
     console.log("Downloading from transfer ", transferLink);
 
-    var token = '069373a6-b237-44f0-bec4-4f19b7cf04da';
+// https://sam/filesender/?s=download&token=06612c36-b8bc-4b54-bf54-4e99a59d3f77'
+    var rx = /token=([^&]+)/g;
+    var token = rx.exec(transferLink)[1];
+
+    if( token.length != 36 ) {
+        console.log("Sorry, you have supplied a bad token in your download link. Expected token length is 36 and you have given ", token.length );
+        return 1;
+    }
+    
     var options = { args: {'token': token}};
 //    var options = {};
     window.filesender.client.get('/transfer/fileidsextended',

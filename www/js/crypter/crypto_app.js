@@ -597,8 +597,8 @@ window.filesender.crypto_app = function () {
 //                        value = value.text();
                     }
                 }
-                console.log('VALUE: ', value);
-                console.log("type of valye ", typeof value );
+//                console.log('VALUE: ', value);
+//                console.log("type of valye ", typeof value );
                 if( typeof value == 'string' ) {
                     var enc = new TextEncoder();
                     value = enc.encode( value );
