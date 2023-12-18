@@ -27,14 +27,38 @@ var password = argv.password;
 argv._.forEach((transferLink) => {
     console.log("Downloading from transfer ", transferLink);
 
-    var options = { args: {'token': '6e5c6201-ff6e-4120-9779-effca4f2b6ad'}};
+    var token = '6e5c6201-ff6e-4120-9779-effca4f2b6ad';
+    var options = { args: {'token': token}};
 //    var options = {};
     window.filesender.client.get('/transfer/fileidsextended',
                                  function(files) {
                                      console.log("callback!");
-                                     files.forEach((file) => {
-                                         console.log("Downloading file id ", file.id );
-                                         console.log("Downloading file  ", file );
+                                     files.forEach((dl) => {
+                                         console.log("Downloading dl id ", dl.id );
+                                         console.log("Downloading dl  ", dl );
+
+                                         var crypto_app = window.filesender.crypto_app();
+
+                                         window.filesender.ui.prompt = function() { return password; }
+                                         var progress = function() { };
+                                         window.filesender.crypto_encrypted_archive_download = false;
+
+
+                                         // FIXME: move to decryptDownloadToBlobSink() to avoid UI code.                                         
+
+                                         
+                                         crypto_app.decryptDownload( config.base_path
+                                                                     + 'download.php?token=' + token
+                                                                     + '&files_ids=' + dl.id,
+                                                                     transfer.id,
+                                                                     dl.mime, dl.filename, dl.filesize, dl.encrypted_filesize,
+                                                                     dl.key_version, dl.salt,
+                                                                     dl.password_version, dl.password_encoding,
+                                                                     dl.password_hash_iterations,
+                                                                     dl.client_entropy,
+                                                                     window.filesender.crypto_app().decodeCryptoFileIV(dl.fileiv,dl.key_version),
+                                                                     dl.fileaead,
+                                                                     progress );
                                          
                                      });
                                  },

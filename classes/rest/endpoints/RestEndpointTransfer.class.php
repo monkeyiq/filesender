@@ -220,6 +220,7 @@ class RestEndpointTransfer extends RestEndpoint
                                 , 'mime' =>  $file->mime_type
                                 , 'name' =>  $file->path
                                 , 'size' => $file->size
+                        
                                 , 'encrypted-size' => $file->encrypted_size
                                 , 'key-version'    => $transfer->key_version
                                 , 'key-salt' => $transfer->salt
@@ -227,6 +228,15 @@ class RestEndpointTransfer extends RestEndpoint
                                 , 'password-encoding' => $transfer->password_encoding_string
                                 , 'password-hash-iterations' => $transfer->password_hash_iterations
                                 , 'client-entropy' => $transfer->client_entropy
+                        
+                                , 'encrypted_size' => $file->encrypted_size
+                                , 'key_version'    => $transfer->key_version
+                                , 'key_salt' => $transfer->salt
+                                , 'password_version' => $transfer->password_version
+                                , 'password_encoding' => $transfer->password_encoding_string
+                                , 'password_hash_iterations' => $transfer->password_hash_iterations
+                                , 'client_entropy' => $transfer->client_entropy
+                        
                                 , 'fileiv' => $file->iv
                                 , 'fileaead' => $file->aead
                                 , 'transferid' => $transfer->id
