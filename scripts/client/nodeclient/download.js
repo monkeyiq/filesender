@@ -24,3 +24,23 @@ if( !argv.password ) {
 }
 var password = argv.password;
 
+argv._.forEach((transferLink) => {
+    console.log("Downloading from transfer ", transferLink);
+
+    var options = { args: {'token': '6e5c6201-ff6e-4120-9779-effca4f2b6ad'}};
+//    var options = {};
+    window.filesender.client.get('/transfer/fileidsextended',
+                                 function(files) {
+                                     console.log("callback!");
+                                     files.forEach((file) => {
+                                         console.log("Downloading file id ", file.id );
+                                         console.log("Downloading file  ", file );
+                                         
+                                     });
+                                 },
+                                 options);
+    
+    
+});
+// signed = "get&sam/filesender/rest.php/transfer/fileids?_=1702893469296&remote_user=testdriver@localhost.localdomain&timestamp=1702893469&"
+//             get&sam/filesender/rest.php/transfer/fileids?remote_user=testdriver@localhost.localdomain&timestamp=1702893469

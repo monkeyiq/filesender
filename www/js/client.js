@@ -206,6 +206,9 @@ window.filesender.client = {
                 }
             }else data = undefined;
 
+            if( !to_sign.endsWith("&")) {
+                to_sign += "&";
+            }
             console.log("AAAA Signing for API ", to_sign );
             console.log("AAAA algo sha1 " );
             console.log("AAAA secret  ", this.api_key );
@@ -273,6 +276,7 @@ window.filesender.client = {
             url: this.base_path + resource,
             strictSSL: false            
         };
+        console.log("AAAA url ", settings.url );
         
         // Needs to be done after "var settings" because handler needs that settings variable exists
         settings.error = function(xhr, status, error) {
@@ -400,7 +404,7 @@ window.filesender.client = {
         }
 
         
-//        console.log("AJAX ", settings );
+        // console.log("AJAX ", settings );
         //        console.log("AJAX2 ", settings.context._resourceLoader._strictSSL );
         if( settings.context._resourceLoader ) {
             settings.context._resourceLoader._strictSSL = false;
