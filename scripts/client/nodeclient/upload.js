@@ -17,8 +17,16 @@ if( argv.expire && argv.expire >= 1 ) {
     expireInDays = argv.expire;
 }
 
+// FIXME we should support generating a password if they do not supply anything.
+if( !argv.password ) {
+    console.log("please use the --password option to supply a password");
+    return;
+}
+var password = argv.password;
+
+
 transfer.encryption = true;
-transfer.encryption_password = '123123';
+transfer.encryption_password = password;
 transfer.disable_terasender = true;
 
 argv._.forEach((filename) => {
