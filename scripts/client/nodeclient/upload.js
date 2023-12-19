@@ -1,9 +1,10 @@
 
 var filesenerapi = require('./filesenderapi');
 
-const http = require('https'); //used to download the config file
-const fs = require('fs'); //used to save the config file
-const ini = require('ini') //used to parse the config file
+const http = require('https');
+const fs = require('fs');
+const ini = require('ini');
+var recursive = require("recursive-readdir");
 
 var argv = require('minimist')(process.argv.slice(2));
 console.dir(argv);
@@ -23,38 +24,109 @@ if( !argv.password ) {
     return;
 }
 var password = argv.password;
-
+    
 
 transfer.encryption = true;
 transfer.encryption_password = password;
 transfer.disable_terasender = true;
 
-argv._.forEach((filename) => {
+var addFile = function( filename )
+{
+    console.log("Adding file: ", filename );
 
     var displayPath = filename.replace(/^[\.\/]*/, '');
-    console.log("Adding file: ", filename );
     var data = fs.readFileSync(filename);
     console.log(data);
-
+    
     var blob = new Blob([data]);
     var errorHandler;
     transfer.addRecipient(username, undefined);
     transfer.addFile(displayPath, blob, errorHandler);
-});
+}
 
-let expiry = (new Date(Date.now() + expireInDays * 24 * 60 * 60 * 1000));
-//transfer.expires = expiry.toISOString().split('T')[0];
-transfer.expires = Math.floor(expiry.getTime()/1000);
-console.log("expireInDays ", expireInDays );
-console.log("expire " , expiry.toISOString() );
-console.log("transfer.expires ", transfer.expires );
-
-transfer.options.get_a_link = true;
+console.log("CCCCCCCCC files.len " , transfer.files.length );
 
 
-transfer.oncomplete = function(transfer, time) {
-    console.log("Your download link: ", global.transfer.download_link );
+var filelist = [].concat(argv._);
+var expandedlist = [];
+
+/**
+ * If -R is enabled then expand any directory name given into the full
+ * recursive list of files in that directory
+ *
+ * @return expandedlist contains the output from the input filelist.
+ */
+async function expandFileList( filename, filelist )
+{
+    console.log("expandFileList() filename", filename );
+    if( !filename ) {
+        return;
+    }
+
+    var isDir = fs.lstatSync(filename).isDirectory();
+    if( !isDir ) {
+        expandedlist.push( filename );
+        expandFileList( filelist.pop(), filelist );
+    } else {
+        if( argv.recursive || argv.R ) {
+            console.log("expandFileList(dir) filename", filename );
+            await recursive(filename).then(
+                async function(files) {
+                    console.log("files are", files);
+                    files.forEach( (x) => { expandedlist.push( x ); } );
+                    await expandFileList( filelist.pop(), filelist );
+                },
+                function(error) {
+                    console.error("something bad happened", error);
+                    process.exit(1);
+                }
+            );
+        } else {
+            console.log("WARNING: please use -R/--recursive if you wish to upload an entire directory");
+            process.exit(1);
+        }
+    }
+    
 }
 
 
-transfer.start();
+
+
+
+    
+async function setupFiles( filelist ) {
+
+    filelist.forEach( async function(filename) {
+        addFile( filename );
+    });
+}
+
+
+function body() {
+    let expiry = (new Date(Date.now() + expireInDays * 24 * 60 * 60 * 1000));
+    //transfer.expires = expiry.toISOString().split('T')[0];
+    transfer.expires = Math.floor(expiry.getTime()/1000);
+    console.log("expireInDays ", expireInDays );
+    console.log("expire " , expiry.toISOString() );
+    console.log("transfer.expires ", transfer.expires );
+    
+    transfer.options.get_a_link = true;
+
+
+    transfer.oncomplete = function(transfer, time) {
+        console.log("Your download link: ", global.transfer.download_link );
+    }
+
+
+    transfer.start();
+}
+
+async function upload() {
+
+    await expandFileList( filelist.pop(), filelist );
+    
+    setupFiles(expandedlist);
+    body();
+    
+}
+upload();

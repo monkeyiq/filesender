@@ -38,11 +38,7 @@ global.$ = global.jQuery = require( "jquery" )( window );
 global.window = window;
 var config = requireFromUrl("https://sam/filesender/filesender-config.js.php");
 global.config = window.filesender.config;
-console.log("ZZZZ CONFIG " , config );
 
-//config = fs.readFileSync('https://sam/filesender/filesender-config.js.php', 'utf8');
-console.log("ZZZZ CONFIG2 " , config );
-console.log("ZZZZ CONFIG3 " , window.filesender.config );
 
 var enc = new TextEncoder();
 

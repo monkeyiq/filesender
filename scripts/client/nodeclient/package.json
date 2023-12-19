@@ -11,6 +11,7 @@
       "xhr2": "^0.2.1",
       "minimist": "^1.2.8",
       "node-fetch": "^3.3.2",
+      "recursive-readdir": "^2.2.3",
     "xregexp": "^5.1.1"
   }
 }
