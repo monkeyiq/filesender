@@ -1,9 +1,10 @@
 
 var filesenerapi = require('./filesenderapi');
 
-const http = require('https'); //used to download the config file
-const fs = require('fs'); //used to save the config file
-const ini = require('ini') //used to parse the config file
+const http = require('https');
+const fs = require('fs'); 
+const ini = require('ini');
+const path = require('node:path');
 
 var argv = require('minimist')(process.argv.slice(2));
 console.dir(argv);
@@ -43,6 +44,11 @@ argv._.forEach((transferLink) => {
         console.log("Sorry, you have supplied a bad token in your download link. Expected token length is 36 and you have given ", token.length );
         return 1;
     }
+
+    var basepath = "./" + token;
+    if (!fs.existsSync(basepath)){
+        fs.mkdirSync(basepath, { recursive: true });
+    }    
     
     var options = { args: {'token': token}};
 //    var options = {};
@@ -60,14 +66,25 @@ argv._.forEach((transferLink) => {
                                          var progress = null;
                                          window.filesender.crypto_encrypted_archive_download = false;
 
-
-                                         // FIXME: move to decryptDownloadToBlobSink() to avoid UI code.                                         
-
                                          var filesize = dl.size;
                                          var mime = dl.mime;
-                                         var name = "output.txt";
+                                         var cleanName = dl.name;
+                                         cleanName = cleanName.replace(/^[.\/]+/, '');
 
-                                         fs.writeFileSync(name, Buffer.from(''),
+                                         // ensure directory
+                                         var filepath = basepath + "/" + path.dirname(cleanName);
+                                         console.log("BBBBBBBBBBBBB Making directory ", filepath );
+                                         if (!fs.existsSync(filepath)){
+                                             console.log("BBBBBBBB making dir __", basepath, "__");
+                                             fs.mkdirSync(filepath, { recursive: true });
+                                         }
+                                         // make path full again
+                                         var filepath = basepath + "/" + cleanName;
+                                         console.log("BBBBBBBBBBBBB file path ", filepath );
+
+                                         
+
+                                         fs.writeFileSync(filepath, Buffer.from(''),
                                          {
                                              encoding: "utf8",
                                              flag: "w",
@@ -90,7 +107,7 @@ argv._.forEach((transferLink) => {
                                                  this.bytesProcessed += decryptedData.length;
                                                  var buffer = Buffer.from(decryptedData);
                                                  console.log("buffer " , buffer);
-                                                 fs.writeFileSync(name, buffer,
+                                                 fs.writeFileSync(filepath, buffer,
                                                                   {
                                                                       encoding: "utf8",
                                                                       flag: "a+",
@@ -109,6 +126,7 @@ argv._.forEach((transferLink) => {
 //                                                     this.callbackError('decrypted data size and expected data size do not match');
                                                      return;
                                                  }
+                                                 console.log("Your files have been downloaded to ", basepath );
                                              }
                                          };
                                          
