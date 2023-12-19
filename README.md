@@ -1,7 +1,7 @@
 
 This is a branch of FileSender that adds a javascript REST client
-proof of concept (PoC). The PoC allows uploading a single file with
-encryption from the command line. That transfer can then be seen from
+proof of concept (PoC). The PoC allows uploading and downloading files
+encryption from the command line. That transfer can also be seen from
 the web interface and downloaded with the same passphrase. The code in
 it's current state is a PoC and needs work to be made ready as a PR.
 
@@ -10,12 +10,20 @@ browser does to perform the upload. This includes the encryption of
 data performed by crypto_app.js. The REST client uses a nodejs
 implementation of WebCrypto to enable this functionality.
 
+Download is performed using the same URL that would be loaded in the
+browser, information is retrieved from the supplied token. Note that
+downloading is only output to output.txt at the moment. A nice
+improvement would be to download the whole transfer to a new
+subdirectory.
+
 Usage:
 
 ```
 $ cd scripts/client/nodeclient
 $ export NODE_TLS_REJECT_UNAUTHORIZED='0'
-$ node upload.js 
+$ node upload.js /tmp/testfile.txt --expire 14 --password abc
+$ node download.js --password abc 'https://example.com/filesender/?s=download&token=06....11' 
+
 ```
 
 The code here uses some code from 
@@ -24,15 +32,12 @@ https://github.com/br00k/filesender/commit/5330c2b361a9e8ac3749181bac1cab37707be
 The following is a non exhaustive list of updates that are needed
 before a pull request is attempted:
 
-* have to test multiple chunk sample files
-
-* add command line arguments to select which files to upload
+* have to do more testing on multiple chunk sample files
 
 * TeraSender upload has not been tested. This would be the preferred
   upload method for best performance.
 
-* There is no download path. As upload is working the download code
-  calls should be able to be added to the rest client.
+* Allow downloading all files in a transfer to a subdirectory.
 
 * Ensure that upload resume works.
 
