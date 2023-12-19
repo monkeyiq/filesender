@@ -36,7 +36,6 @@ filesender.terasender.stop = function() { console.log("EEEEE terasender.stop");}
 argv._.forEach((transferLink) => {
     console.log("Downloading from transfer ", transferLink);
 
-// https://sam/filesender/?s=download&token=06612c36-b8bc-4b54-bf54-4e99a59d3f77'
     var rx = /token=([^&]+)/g;
     var token = rx.exec(transferLink)[1];
 
@@ -73,14 +72,11 @@ argv._.forEach((transferLink) => {
 
                                          // ensure directory
                                          var filepath = basepath + "/" + path.dirname(cleanName);
-                                         console.log("BBBBBBBBBBBBB Making directory ", filepath );
                                          if (!fs.existsSync(filepath)){
-                                             console.log("BBBBBBBB making dir __", basepath, "__");
                                              fs.mkdirSync(filepath, { recursive: true });
                                          }
                                          // make path full again
                                          var filepath = basepath + "/" + cleanName;
-                                         console.log("BBBBBBBBBBBBB file path ", filepath );
 
                                          
 
@@ -172,5 +168,3 @@ argv._.forEach((transferLink) => {
     
     
 });
-// signed = "get&sam/filesender/rest.php/transfer/fileids?_=1702893469296&remote_user=testdriver@localhost.localdomain&timestamp=1702893469&"
-//             get&sam/filesender/rest.php/transfer/fileids?remote_user=testdriver@localhost.localdomain&timestamp=1702893469
