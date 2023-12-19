@@ -1,9 +1,10 @@
 
 This is a branch of FileSender that adds a javascript REST client
 proof of concept (PoC). The PoC allows uploading and downloading files
-encryption from the command line. That transfer can also be seen from
-the web interface and downloaded with the same passphrase. The code in
-it's current state is a PoC and needs work to be made ready as a PR.
+with encryption from the command line. That transfer can also be seen
+from the web interface and downloaded with the same passphrase. The
+code in it's current state is a PoC and needs work to be made ready as
+a PR.
 
 The javascript REST client uses the same javascript code that the
 browser does to perform the upload. This includes the encryption of
@@ -11,10 +12,10 @@ data performed by crypto_app.js. The REST client uses a nodejs
 implementation of WebCrypto to enable this functionality.
 
 Download is performed using the same URL that would be loaded in the
-browser, information is retrieved from the supplied token. Note that
-downloading is only output to output.txt at the moment. A nice
-improvement would be to download the whole transfer to a new
-subdirectory.
+browser, information is retrieved from the supplied token. All saved
+files are placed into a new subdirectory with the token value as the
+directory name. By default all the files of an encrypted transfer are
+downloaded into that new subdirectory.
 
 Usage:
 
@@ -23,6 +24,8 @@ $ cd scripts/client/nodeclient
 $ export NODE_TLS_REJECT_UNAUTHORIZED='0'
 $ node upload.js /tmp/testfile.txt --expire 14 --password abc
 $ node download.js --password abc 'https://example.com/filesender/?s=download&token=06....11' 
+
+$ node upload.js -R /tmp/testdir --password allthefiles
 
 ```
 
@@ -36,8 +39,6 @@ before a pull request is attempted:
 
 * TeraSender upload has not been tested. This would be the preferred
   upload method for best performance.
-
-* Allow downloading all files in a transfer to a subdirectory.
 
 * Ensure that upload resume works.
 
