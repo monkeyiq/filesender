@@ -516,7 +516,7 @@ window.filesender.crypto_app = function () {
                              function (e) {
                                  callbackError(e);
                              });
-            window.filesender.log("done.");    
+                                     
         },
 
         
@@ -562,7 +562,6 @@ window.filesender.crypto_app = function () {
             this.obtainKey(chunkid, encryption_details, function (key) {
 
                 var iv = $this.generateIV( chunkid, encryption_details );
-            window.filesender.log("AAA 1.");    
 
                 /*
                  * The algorithm parameters include the algorithm name to use
@@ -589,24 +588,9 @@ window.filesender.crypto_app = function () {
                         encryption_details.fileaead);
                 }
                 
-                window.filesender.log("AAA 2.");
-                console.log(typeof value);
-                if( typeof value == 'object' ) {
-                    console.log(value.constructor.name);
-                    if(value.constructor.name == 'Blob') {
-//                        value = value.text();
-                    }
-                }
-//                console.log('VALUE: ', value);
-//                console.log("type of valye ", typeof value );
-                if( typeof value == 'string' ) {
-                    var enc = new TextEncoder();
-                    value = enc.encode( value );
-                }
                 crypto.subtle.encrypt(encryptParams, key, value).then(
                     function (result) {
                         
-            window.filesender.log("AAA 3.");    
                             var joinedData = window.filesender.crypto_common().joinIvAndData(iv, new Uint8Array(result));
 
                             var btoaData = joinedData;
@@ -1142,7 +1126,7 @@ window.filesender.crypto_app = function () {
                 
                 if( error && error.message && error.message != "" ) {
                     msg = error.message;
-                }
+                } 
                 alert( msg );
                 if (progress){
                     progress.html( msg );

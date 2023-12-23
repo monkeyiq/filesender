@@ -1172,6 +1172,7 @@ window.filesender.transfer = function() {
                 return false;
             }
         }
+
         // No AEAD unless we explicitly set some below for encrypted files.
         for (var i = 0; i < this.files.length; i++) {
             this.files[i].aead = '';
@@ -1400,9 +1401,6 @@ window.filesender.transfer = function() {
         
         var slicer = file.blob.slice ? 'slice' : (file.blob.mozSlice ? 'mozSlice' : (file.blob.webkitSlice ? 'webkitSlice' : 'slice'));
 
-        console.log("ZZZZZZZZZZZZZZ offset ", offset );
-        console.log("ZZZZZZZZZZZZZZ end ", end );
-        console.log("ZZZZZZZZZZZZZZ blob", file.blob );
         var blob = file.blob[slicer](offset, end, "application/octet-stream");
         var file_uploaded_when_chunk_complete = end;
         if (file_uploaded_when_chunk_complete > file.size)
@@ -1419,30 +1417,6 @@ window.filesender.transfer = function() {
         this.recordUploadStartedInWatchdog(worker_id,file);
 
         var encryption_details = transfer.getEncryptionMetadata( file );
-        console.log("transfer.js putChunk()");
-
-
-        // FIXME Converting a blob to a string!
-        console.log(typeof blob);
-        if( typeof blob == 'object' ) {
-            console.log("blob constructor name", blob.constructor.name);
-            if(blob.constructor.name == 'Blob') {
-                var origsz = blob.size;
-                console.log("AAAAAAAAA1 transfer blob size ", blob.size );
-                console.log("AAAAAAAAA1 transfer blob length ", blob.length );
-
-                blob = await new Response(blob).arrayBuffer();
-                blob.size = origsz;
-//                blob = Uint8Array.from( blob );
-//                blob = await blob.text();
-//                blob = await blob.arrayBuffer();
-                //                blob = Buffer.from(blob);
-
-//  ArrayBuffer, Buffer, TypedArray, or DataView                
-                console.log("AAAAAAAAA2 transfer blob size ", blob.length );
-
-            }
-        }
         
         this.uploader = filesender.client.putChunk(
             file, blob, offset,

@@ -111,10 +111,6 @@ window.filesender.client = {
     
     // Send a request to the webservice
     call: async function(method, resource, data, callback, options) {
-
-        console.log("call resource ", resource );
-        console.log("call data ", data );
-        
         if(!this.base_path) {
             var path = window.location.href;
             path = path.split('/');
@@ -550,7 +546,6 @@ window.filesender.client = {
         if( typeof blob == "string" ) {
             sz = blob.length;
         }
-        console.log("BBBBBBBBBBBB putchunk() size ", sz );
         var opts = {
             contentType: 'application/octet-stream',
             'accept-encoding': 'identity',
@@ -578,43 +573,24 @@ window.filesender.client = {
         var $this = this;
         if(encrypted){
 
-            // FIXME: need to merge this with below block.
-            if( true ) {
-                window.filesender.crypto_app().encryptBlob(
-                    blob,
-                    chunkid,
-                    encryption_details,
-                    function(encrypted_blob) {
-                        var result = $this.put(
-                            file.transfer.authenticatedEndpoint(
-                                '/file/' + file.id + '/chunk/' + offset,
-                                file), encrypted_blob, done, opts);
-                    }
-                );
-            }
-            else
-            {
-            
-            var cryptedBlob = null;
-            blobReader = window.filesender.crypto_blob_reader().createReader(blob, function(blob){
-                // nothing todo here.. 
-            });
-            blobReader.blobSlice = blob;
-
-            blobReader.readArrayBuffer(function(arrayBuffer){
-                window.filesender.crypto_app().encryptBlob(
-                    arrayBuffer,
-                    chunkid,
-                    encryption_details,
-                    function(encrypted_blob) {
-                        var result = $this.put(
-                            file.transfer.authenticatedEndpoint(
-                                '/file/' + file.id + '/chunk/' + offset,
-                                file), encrypted_blob, done, opts);
-                    }
-                );
-            });
-            }
+            var origsz = blob.size;
+            var response = new Response(blob);
+            response.arrayBuffer().then(
+                function(arrayBuffer){
+                    arrayBuffer.size = origsz;
+                    window.filesender.crypto_app().encryptBlob(
+                        arrayBuffer,
+                        chunkid,
+                        encryption_details,
+                        function(encrypted_blob) {
+                            var result = $this.put(
+                                file.transfer.authenticatedEndpoint(
+                                    '/file/' + file.id + '/chunk/' + offset,
+                                    file), encrypted_blob, done, opts);
+                        }
+                    );
+                }
+            );
         }else{
             var result = $this.put(file.transfer.authenticatedEndpoint('/file/' + file.id + '/chunk/' + offset, file), blob, done, opts);
         }
