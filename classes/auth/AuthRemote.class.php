@@ -119,17 +119,15 @@ class AuthRemote
             
             // Build signed data
             $signed = $method.'&'.$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME'].(array_key_exists('PATH_INFO', $_SERVER) ? $_SERVER['PATH_INFO'] : '');
-            Logger::error("AAA signed1 $signed ");
+            
             $args = $_GET;
-            Logger::dump("AAA signed1 args", $args );
             unset($args['signature']);
             if (count($args)) {
                 unset($args['_']);                
-                Logger::dump("AAA signed1b args", $args );
                 $signed .= '?'.implode('&', RestUtilities::flatten($args));
             }
-            Logger::error("AAA signed2 $signed ");
 
+            // The data in an uploaded chunk is not actually signed
             if( preg_match( '|/chunk/|', $signed )) {
                     $signed .= '&';
             } else {            
