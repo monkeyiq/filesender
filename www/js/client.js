@@ -133,15 +133,8 @@ window.filesender.client = {
         for(var k in args) urlargs.push(k + '=' + args[k]);
         
         
-//        if(data) {
-//            var raw = options && ('rawdata' in options) && options.rawdata;
-//            
-//            if(!raw) data = JSON.stringify(data);
-//        }else data = undefined;
-        console.log("AAAAAAAAAA 1");
-// API Key based authentication (i.e. CLI)
+        // API Key based authentication (i.e. CLI)
         if (this.api_key) {
-            console.log("api key !!! ... 1 " );
             //... if there is an API key then REST CLI
             var timestamp = Math.floor(Date.now() / 1000);
 
@@ -162,11 +155,9 @@ window.filesender.client = {
                         +urlargs.join('&');
 
             if(data) {
-            console.log("api key !!! ... 2 " );
                 var raw = options && ('rawdata' in options) && options.rawdata;
 
                 if(!raw) {
-            console.log("api key !!! ... !raw  " );
                     //clean up the data
                     data.aup_checked = 1;
 
@@ -174,15 +165,8 @@ window.filesender.client = {
                     Object.keys(data).forEach((key) => data[key] == null && delete data[key]);
                     data = JSON.stringify(data);
                     to_sign += '&' + data;
-                    console.log(data);
                 } else {
-            console.log("api key !!! ... handle data " );
-                    // Await the return value - because outer function is now ASYNC
-                    console.log("dataAAAAAAA1 " , data );
-                    //                    let value = '';
-
                     value = '';
-                    
                     if( typeof data == 'object' ) {
                         console.log(data.constructor.name);
                         if(data.constructor.name == 'Blob') {
@@ -193,24 +177,15 @@ window.filesender.client = {
                         value = data.buffer;
                     }
                     
-////                    let value = await data.text();
-////                    data = value;
-                    //                    let value = data.text();
-//                    let value = blobToUint8Array(data);
-                    //                    let value = data.buffer;
-                    //                    let value = JSON.stringify(data);
-                    
-                    console.log("dataAAAAAAA2 " , value );
                     to_sign += '&'+value;
                 }
-            }else data = undefined;
+            } else {
+                data = undefined;
+            }
 
             if( options.force_amp_at_end && !to_sign.endsWith("&")) {
                 to_sign += "&";
             }
-            console.log("AAAA Signing for API ", to_sign );
-            console.log("AAAA algo sha1 " );
-            console.log("AAAA secret  ", this.api_key );
             //hmac of to_sign content
             const crypto = require('crypto');
             //TODO: get the ALGORITHM from config/REST rather than default to "sha1"
@@ -223,11 +198,16 @@ window.filesender.client = {
 
             if(data) {
                 var raw = options && ('rawdata' in options) && options.rawdata;
+                
+                if(!raw) data = JSON.stringify(data);
+            }else data = undefined;
+            
+            if(data) {
+                var raw = options && ('rawdata' in options) && options.rawdata;
 
                 if(!raw) data = JSON.stringify(data);
             }else data = undefined;
         }        
-        console.log("AAAAAAAAAA 2");
 
         if(urlargs.length) resource += (resource.match(/\?/) ? '&' : '?') + urlargs.join('&');
         
@@ -260,21 +240,17 @@ window.filesender.client = {
             beforeSend: function(xhr) {
                 for(var k in headers) xhr.setRequestHeader(k, headers[k]);
                 xhr.withCredentials = false;
-                console.log("beforeSend!!!!!!!!!!!!");
             },
             success: function(data, status, xhr) {
-                console.log("AAAAAAAAAA success");
                 filesender.client.updateSecurityToken(xhr); // Update security token if it was changed (do this before callback since callback may trigger another request)
                 callback.apply(null, arguments);
             },
             complete: function(xhr) {
-                console.log("AAAAAAAAAA complete");
                 filesender.client.updateSecurityToken(xhr); // Update security token if it was changed
             },
             type: method.toUpperCase(),
             url: this.base_path + resource
         };
-        console.log("AAAA url ", settings.url );
         
         // Needs to be done after "var settings" because handler needs that settings variable exists
         settings.error = function(xhr, status, error) {
