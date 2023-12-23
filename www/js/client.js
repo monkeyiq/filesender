@@ -108,6 +108,9 @@ window.filesender.client = {
         if(filesender.terasender && filesender.terasender.security_token != source)
             filesender.terasender.security_token = source;
     },
+
+    setupSSLOptions: function( settings ) {
+    },
     
     // Send a request to the webservice
     call: async function(method, resource, data, callback, options) {
@@ -269,8 +272,7 @@ window.filesender.client = {
                 filesender.client.updateSecurityToken(xhr); // Update security token if it was changed
             },
             type: method.toUpperCase(),
-            url: this.base_path + resource,
-            strictSSL: false            
+            url: this.base_path + resource
         };
         console.log("AAAA url ", settings.url );
         
@@ -400,17 +402,8 @@ window.filesender.client = {
         }
 
         
-        // console.log("AJAX ", settings );
-        //        console.log("AJAX2 ", settings.context._resourceLoader._strictSSL );
-        if( settings.context._resourceLoader ) {
-            settings.context._resourceLoader._strictSSL = false;
-        }
-        var ret = jQuery.ajax(settings);
-
-//        console.log(ret);
-//        ret._resourceLoader._strictSSL = false;
-
-        return ret;
+        this.setupSSLOptions( settings );
+        return jQuery.ajax(settings);
     },
     
     get: function(resource, callback, options) {

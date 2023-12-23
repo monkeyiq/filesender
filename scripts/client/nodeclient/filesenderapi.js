@@ -124,3 +124,11 @@ key = generateAesKey(256).then( function( key )  {
 module.exports = function() { 
     this.transfer = transfer;
 }
+
+window.filesender.client.setupSSLOptions = function( settings ) {
+    if( !user_config['system']['strictssl'] ) {
+        if( settings.context._resourceLoader ) {
+            settings.context._resourceLoader._strictSSL = false;
+        }
+    }
+}
