@@ -37,29 +37,6 @@
 if(!('filesender' in window)) window.filesender = {};
 
 
-function blobToUint8Array(b) {
-    var uri = URL.createObjectURL(b),
-        xhr = new XMLHttpRequest(),
-        i,
-        ui8;
-    
-    xhr.open('GET', uri, false);
-    xhr.send();
-    
-    URL.revokeObjectURL(uri);
-    
-    ui8 = new Uint8Array(xhr.response.length);
-    
-    for (i = 0; i < xhr.response.length; ++i) {
-        ui8[i] = xhr.response.charCodeAt(i);
-    }
-    
-    return ui8;
-}
-
-
-
-
 /**
  * AJAX webservice client
  */
@@ -239,7 +216,6 @@ window.filesender.client = {
             dataType: 'json',
             beforeSend: function(xhr) {
                 for(var k in headers) xhr.setRequestHeader(k, headers[k]);
-                xhr.withCredentials = false;
             },
             success: function(data, status, xhr) {
                 filesender.client.updateSecurityToken(xhr); // Update security token if it was changed (do this before callback since callback may trigger another request)
@@ -254,8 +230,6 @@ window.filesender.client = {
         
         // Needs to be done after "var settings" because handler needs that settings variable exists
         settings.error = function(xhr, status, error) {
-//            console.log(xhr);
-            xhr.responseText = xhr.statusText;
             var msg = xhr.responseText.replace(/^\s+/, '').replace(/\s+$/, '');
             
             if( // Ignore 40x, 50x and timeouts if undergoing maintenance
@@ -383,7 +357,10 @@ window.filesender.client = {
     },
     
     get: function(resource, callback, options) {
-        options.force_amp_at_end = true;
+        // nodejs command line client only
+        if (this.api_key) {
+            options.force_amp_at_end = true;
+        }
         return this.call('get', resource, undefined, callback, options);
     },
     
