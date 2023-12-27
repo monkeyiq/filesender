@@ -114,7 +114,7 @@ function body() {
 
 
     transfer.oncomplete = function(transfer, time) {
-        console.log("Your download link: ", global.transfer.download_link );
+        console.log("Your download link: '" + global.transfer.download_link + "'" );
     }
 
 
