@@ -77,9 +77,6 @@ global.crypto.subtle = subtle;
 
 crypto.getRandomValues(new Uint8Array(32));
 
-//subtle.digest( {name: 'SHA-256'}, enc.encode('passwordBuffer') ).then( function (key) {
-//});
-
 
 
 //create a new transfer
@@ -95,30 +92,6 @@ global.window.filesender.supports.reader = true;
 global.window.filesender.client.api_key = apikey;
 
 
-
-console.log('hi there 2');
-//console.log(config);
-//console.log(window.filesender);
-//console.log(window.filesender.config);
-
-
-
-/*
-async function generateAesKey(length = 256) {
-  const key = await subtle.generateKey({
-    name: 'AES-CBC',
-    length,
-  }, true, ['encrypt', 'decrypt']);
-
-  return key;
-}
-*/
-
-/*
-key = generateAesKey(256).then( function( key )  {
-    console.log("key ", key );
-});
-*/
 
 
 module.exports = function() { 
