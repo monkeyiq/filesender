@@ -27,7 +27,7 @@ if (!('config' in global))
 const home = process.env.HOME || process.env.USERPROFILE;
 const user_config_file = fs.readFileSync(home + '/.filesender/filesender.py.ini', 'utf8');
 const user_config = ini.parse(user_config_file);
-const base_url = user_config['system']['base_url'].split('/').slice(0, -1).join('/');
+const base_url = user_config['system']['base_url'].replace(/[/]rest.php$/,"");
 const default_transfer_days_valid = user_config['system']['default_transfer_days_valid'];
 const username = user_config['user']['username'];
 const apikey = user_config['user']['apikey'];
@@ -36,7 +36,7 @@ const { JSDOM } = require( "jsdom" );
 const { window } = new JSDOM( "", {url: base_url + "/?s=upload"} );
 global.$ = global.jQuery = require( "jquery" )( window );
 global.window = window;
-var config = requireFromUrl("https://sam/filesender/filesender-config.js.php");
+var config = requireFromUrl(base_url + "/filesender-config.js.php");
 global.config = window.filesender.config;
 
 
