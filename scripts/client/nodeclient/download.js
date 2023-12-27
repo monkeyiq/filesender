@@ -7,8 +7,6 @@ const ini = require('ini');
 const path = require('node:path');
 
 var argv = require('minimist')(process.argv.slice(2));
-console.dir(argv);
-
 var expireInDays = 7;
 if( argv.expire && argv.expire >= 1 ) {
     if( argv.expire > config.max_transfer_days_valid ) {
@@ -53,8 +51,6 @@ argv._.forEach((transferLink) => {
                                  function(files) {
                                      console.log("callback!");
                                      files.forEach((dl) => {
-                                         console.log("Downloading dl id ", dl.id );
-                                         console.log("Downloading dl  ", dl );
 
                                          var crypto_app = window.filesender.crypto_app();
 
