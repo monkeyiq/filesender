@@ -2,7 +2,6 @@
     
 const { subtle } = require('crypto').webcrypto;
 const { Blob } = require('buffer');
-//const Blob = require('node-blob');
 const { LocalStorage } = require("node-localstorage");
 const { randombytes } = require('node-get-random-values');
 var FileReader = require('filereader');
