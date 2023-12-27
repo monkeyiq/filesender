@@ -50,6 +50,7 @@ require('../../../www/js/crypter/crypto_common.js');
 require('../../../www/js/crypter/crypto_app.js');
 require('../../../www/js/crypter/crypto_blob_reader.js');
 
+
 //add some required functions
 global.window.filesender.ui = {};
 global.window.filesender.ui.error = function(error,callback) {

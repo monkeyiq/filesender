@@ -7,8 +7,6 @@ const ini = require('ini');
 var recursive = require("recursive-readdir");
 
 var argv = require('minimist')(process.argv.slice(2));
-console.dir(argv);
-
 var expireInDays = 7;
 if( argv.expire && argv.expire >= 1 ) {
     if( argv.expire > config.max_transfer_days_valid ) {
@@ -36,7 +34,6 @@ var addFile = function( filename )
 
     var displayPath = filename.replace(/^[\.\/]*/, '');
     var data = fs.readFileSync(filename);
-    console.log(data);
     
     var blob = new Blob([data]);
     var errorHandler;
@@ -44,7 +41,6 @@ var addFile = function( filename )
     transfer.addFile(displayPath, blob, errorHandler);
 }
 
-console.log("CCCCCCCCC files.len " , transfer.files.length );
 
 
 var filelist = [].concat(argv._);
@@ -58,7 +54,6 @@ var expandedlist = [];
  */
 async function expandFileList( filename, filelist )
 {
-    console.log("expandFileList() filename", filename );
     if( !filename ) {
         return;
     }
@@ -69,10 +64,8 @@ async function expandFileList( filename, filelist )
         expandFileList( filelist.pop(), filelist );
     } else {
         if( argv.recursive || argv.R ) {
-            console.log("expandFileList(dir) filename", filename );
             await recursive(filename).then(
                 async function(files) {
-                    console.log("files are", files);
                     files.forEach( (x) => { expandedlist.push( x ); } );
                     await expandFileList( filelist.pop(), filelist );
                 },
@@ -102,31 +95,22 @@ async function setupFiles( filelist ) {
 }
 
 
-function body() {
-    let expiry = (new Date(Date.now() + expireInDays * 24 * 60 * 60 * 1000));
-    //transfer.expires = expiry.toISOString().split('T')[0];
-    transfer.expires = Math.floor(expiry.getTime()/1000);
-    console.log("expireInDays ", expireInDays );
-    console.log("expire " , expiry.toISOString() );
-    console.log("transfer.expires ", transfer.expires );
-    
-    transfer.options.get_a_link = true;
-
-
-    transfer.oncomplete = function(transfer, time) {
-        console.log("Your download link: '" + global.transfer.download_link + "'" );
-    }
-
-
-    transfer.start();
-}
 
 async function upload() {
 
     await expandFileList( filelist.pop(), filelist );
     
     setupFiles(expandedlist);
-    body();
+
+    let expiry = (new Date(Date.now() + expireInDays * 24 * 60 * 60 * 1000));
+    transfer.expires = Math.floor(expiry.getTime()/1000);    
+    transfer.options.get_a_link = true;
+
+    transfer.oncomplete = function(transfer, time) {
+        console.log("Your download link: '" + global.transfer.download_link + "'" );
+    }
+
+    transfer.start();
     
 }
 
