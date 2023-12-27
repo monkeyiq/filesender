@@ -24,7 +24,6 @@ if( !argv.password ) {
     return;
 }
 var password = argv.password;
-console.log("AAAAA password ", password );
 
 global.alert = function(msg) { console.log(msg); }
 if( !filesender.terasender ) {
@@ -50,7 +49,6 @@ argv._.forEach((transferLink) => {
     }    
     
     var options = { args: {'token': token}};
-//    var options = {};
     window.filesender.client.get('/transfer/fileidsextended',
                                  function(files) {
                                      console.log("callback!");
@@ -95,14 +93,16 @@ argv._.forEach((transferLink) => {
 //                                             callbackError: callbackError,
                                              name: function() { return "legacy"; },
                                              error: function(error) {
+                                                 console.log("");
+                                                 console.log(window.filesender.config.language.file_encryption_wrong_password);
+                                                 console.log("An error has occurred, most likely your password was incorrect.");
+                                                 process.exit(1);
                                              },
                                              visit: function(chunkid,decryptedData) {
-                                                 window.filesender.log("SINK blobSinkLegacy visiting chunkid " + chunkid + "  data.len " + decryptedData.length );
-                                                 console.log("decryptedData " , decryptedData);
+//                                                 window.filesender.log("SINK blobSinkLegacy visiting chunkid " + chunkid + "  data.len " + decryptedData.length );
                                                  this.blobArray.push(decryptedData);
                                                  this.bytesProcessed += decryptedData.length;
                                                  var buffer = Buffer.from(decryptedData);
-                                                 console.log("buffer " , buffer);
                                                  fs.writeFileSync(filepath, buffer,
                                                                   {
                                                                       encoding: "utf8",
@@ -112,10 +112,10 @@ argv._.forEach((transferLink) => {
                                                  
                                              },
                                              done: function() {
-                                                 window.filesender.log("SINK blobSinkLegacy.done()");
-                                                 window.filesender.log("SINK blobSinkLegacy.done()      expected size " + filesize );
-                                                 window.filesender.log("SINK blobSinkLegacy.done() decryped data size " + this.bytesProcessed );
-                                                 window.filesender.log("SINK blobSinkLegacy.done()     blobarray size " + this.blobArray.length );
+                                                 // window.filesender.log("SINK blobSinkLegacy.done()");
+                                                 // window.filesender.log("SINK blobSinkLegacy.done()      expected size " + filesize );
+                                                 // window.filesender.log("SINK blobSinkLegacy.done() decryped data size " + this.bytesProcessed );
+                                                 // window.filesender.log("SINK blobSinkLegacy.done()     blobarray size " + this.blobArray.length );
 
                                                  if( this.expected_size != this.bytesProcessed ) {
                                                      window.filesender.log("blobSinkLegacy.done() size mismatch");
@@ -132,22 +132,6 @@ argv._.forEach((transferLink) => {
                                              + 'download.php?token=' + token
                                              + '&files_ids=' + dl.id;
 
-                                         console.log("config ", config );
-                                         console.log("download link ", link );
-                                         console.log("pass ", password );
-                                         console.log("tid  ", dl.transferid );
-                                         console.log("mime ", dl.mime );
-                                         console.log("fname ", dl.name );
-                                         console.log("size  ", dl.size );
-                                         console.log("esize ", dl.encrypted_size );
-                                         console.log("kver ", dl.key_version );
-                                         console.log("salt ", dl.key_salt );
-                                         console.log("pver ", dl.password_version );
-                                         console.log("penc ", dl.password_encoding );
-                                         console.log("hasiters ", dl.password_hash_iterations );
-                                         console.log("cliente  ", dl.client_entropy );
-                                         console.log("aead     ", dl.fileaead );
-                                         
                                          crypto_app.decryptDownloadToBlobSink( blobSink, password,
                                                                                dl.transferid, link,
                                                                                dl.mime, dl.name, dl.size, dl.encrypted_size,
