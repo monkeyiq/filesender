@@ -1381,7 +1381,7 @@ window.filesender.transfer = function() {
     /**
      * Chunk by chunk upload
      */
-    this.uploadChunk = async function() {
+    this.uploadChunk = function() {
         if (this.status == 'stopped')
             return;
         

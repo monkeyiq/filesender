@@ -90,7 +90,7 @@ window.filesender.client = {
     },
     
     // Send a request to the webservice
-    call: async function(method, resource, data, callback, options) {
+    call: function(method, resource, data, callback, options) {
         if(!this.base_path) {
             var path = window.location.href;
             path = path.split('/');
@@ -144,16 +144,9 @@ window.filesender.client = {
                     to_sign += '&' + data;
                 } else {
                     value = '';
-                    if( typeof data == 'object' ) {
-                        console.log(data.constructor.name);
-                        if(data.constructor.name == 'Blob') {
-                            value = await data.text();
-                            data = value;
-                        }
-                    } else {
+                    if( typeof data != 'object' ) {
                         value = data.buffer;
                     }
-                    
                     to_sign += '&'+value;
                 }
             } else {
