@@ -156,12 +156,9 @@ window.filesender.client = {
             if( options.force_amp_at_end && !to_sign.endsWith("&")) {
                 to_sign += "&";
             }
-            //hmac of to_sign content
+            
             const crypto = require('crypto');
-            //TODO: get the ALGORITHM from config/REST rather than default to "sha1"
             let signature = crypto.createHmac("sha1", this.api_key).update(to_sign).digest().toString('hex');
-
-            // add the signature to the URL args
             urlargs.push('signature' + '=' + signature);
 
         } else {
