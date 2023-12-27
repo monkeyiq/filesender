@@ -8,9 +8,9 @@ const { randombytes } = require('node-get-random-values');
 var FileReader = require('filereader');
 global.FileReader = FileReader;
 
-const http = require('https'); //used to download the config file
-const fs = require('fs'); //used to save the config file
-const ini = require('ini') //used to parse the config file
+const http = require('https');
+const fs = require('fs');
+const ini = require('ini');
 
 var requireFromUrl = require('require-from-url/sync');
 const XRegExp = require('xregexp');
