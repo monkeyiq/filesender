@@ -405,12 +405,13 @@ $(function() {
     }).button({disabled: true});
 
     // special fix for esc key on firefox stopping xhr
-    window.addEventListener('keydown', function(e) {
-        if( e.isTrusted ) {
-            (e.keyCode == 27 && e.preventDefault())
+    $( "input" ).on( "keydown", function( e ) {
+        // esc key
+        if( e.which == 27 ) {
+            e.stopImmediatePropagation();
         }
-    });
-
+    } );    
+    
     // Custom collapse
     $('.fs-collapse__open').on('click', function() {
         $(this.parentElement).addClass('fs-collapse--open');
