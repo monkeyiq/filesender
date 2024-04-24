@@ -434,7 +434,9 @@ class Auth
                         array_key_exists($entitlement_attribute, self::$attributes['additional']) &&
                         in_array($entitlement_attribute, $additional_attributes)) {
 
-                        self::$isAdmin = in_array($admin_entitlement, self::$attributes['additional'][$entitlement_attribute]);
+                        if( self::$attributes['additional'][$entitlement_attribute] ) {
+                            self::$isAdmin = in_array($admin_entitlement, self::$attributes['additional'][$entitlement_attribute]);
+                        }
                     }
                 } else {
                     // Admin UID from config file
