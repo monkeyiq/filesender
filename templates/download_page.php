@@ -253,7 +253,10 @@ $showdownloadlinks = Utilities::isTrue(Config::get('download_show_download_links
                                 </tbody>
                             </table>
 
-                            <div class="transfer" data-id="<?php echo Template::Q($transfer->id) ?>"></div>
+                            <div class="transfer" data-id="<?php echo Template::Q($transfer->id) ?>"
+                                 data-chunk-size="<?php          echo Template::Q($transfer->chunk_size); ?>"
+                                 data-crypted-chunk-size="<?php  echo Template::Q($transfer->crypted_chunk_size); ?>"
+                            ></div>
                             <div class="rid" data-id="<?php echo Template::Q($rid) ?>"></div>
                         </div>
                     </div>
