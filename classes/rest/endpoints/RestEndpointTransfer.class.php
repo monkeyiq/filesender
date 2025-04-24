@@ -201,6 +201,10 @@ class RestEndpointTransfer extends RestEndpoint
                 throw new RestBadParameterException('token');
             }
 
+            // Need to be authenticated
+            if (!Auth::isAuthenticated()) {
+                throw new RestAuthenticationRequiredException();
+            }
             
             $recipient = Recipient::fromToken($token);
             if ($recipient->transfer) {

@@ -341,7 +341,7 @@ def flatten(d, parent_key=''):
   items.sort()
   return items
 
-def call(method, path, data, content=None, rawContent=None, options={}, tryCount=0):
+def call(method, path, data, content=None, rawContent=None, options={}, tryCount=0, forceSign=False):
   initData = {}
   for k in data:
     initData[k] = data[k]
@@ -362,7 +362,7 @@ def call(method, path, data, content=None, rawContent=None, options={}, tryCount
     signed += inputcontent
 
   #print(signed)
-  if 'token' not in data: #If an auth token is provided we should not sign the call.
+  if forceSign or 'token' not in data: #If an auth token is provided we should not sign the call.
     bkey = bytearray()
     bkey.extend(map(ord, apikey))
     data['signature'] = hmac.new(bkey, signed, hashlib.sha1).hexdigest()
@@ -513,6 +513,7 @@ def getFilesInTransfer(transfer_token) -> list[dict]:
     {'token':transfer_token},
     None,None,
     {},
+    0, True
   )
 
 def downloadFile(token,file_info:dict,download_key:bytes|None, attempt:int=0):
@@ -657,8 +658,8 @@ def deconstruct_download_link(download_link:str) -> tuple[str, str]:
 def download_transfer(download_link):
   """Save all files in a given transfer to the local disk."""
   (download_base_url,download_token) = deconstruct_download_link(download_link)
+  download_base_url = download_base_url.rstrip("/")
   globals()["base_url"] = f"{download_base_url}/rest.php"
-
   file_list = getFilesInTransfer(download_token)
   download_size = sum(map(lambda x: x['size'],file_list))
   downloaded_total = 0
