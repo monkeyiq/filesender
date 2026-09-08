@@ -35,8 +35,6 @@
 //Add relevant entries for browser locales here, and your translation will automagically be recognized and used....
 
 
-importfile de_at   FileSender_3.0_Austria.php
-
 $locales  =  array(
     'hy-am' => array('name' => 'Armenian (Armenia)', 'path' => 'hy_AM'),
     'de-at' => array('name' => 'Austria', 'path' => 'de_AT'),
